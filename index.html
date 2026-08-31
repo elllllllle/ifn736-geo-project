@@ -1,4 +1,4 @@
-<title>GEO Dashboard</title>
+<title>GEO Visibility Board</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;600;700&display=swap">
@@ -266,9 +266,23 @@
   @media (prefers-reduced-motion: reduce){
     *{ transition:none !important; animation:none !important; }
   }
+
+  .site-nav{ display:flex; gap:4px; margin-bottom:14px; }
+  .site-nav-link{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:12px; font-weight:600;
+    letter-spacing:.04em; text-decoration:none; color:var(--text-lo);
+    padding:6px 12px; border-radius:6px; border:1px solid transparent;
+  }
+  .site-nav-link.active{ color:var(--text-hi); background:var(--panel); border-color:var(--border); box-shadow:var(--shadow); }
+  .site-nav-link:hover:not(.active){ color:var(--text-hi); }
 </style>
 
 <div class="wrap">
+
+  <nav class="site-nav">
+    <a href="./" class="site-nav-link active">Dashboard</a>
+    <a href="./chat/" class="site-nav-link">Chat Demo</a>
+  </nav>
 
   <header class="masthead">
     <div class="eyebrow" style="margin-bottom:24px;">IFN736 Industry Project (Phase 2) · Group 22</div>
@@ -286,8 +300,8 @@
   <div class="banner">
     <div class="icon">i</div>
     <div>
-      <p>The <b>V3 — Content-Injected</b> numbers below are measured against the 9 mockup sites, which run on <code style="font-family:'Roboto Mono',monospace;background:var(--panel-2);padding:1px 5px;border-radius:4px;">products.js</code> — a 30-product dataset the team hand-built, including invented star ratings and review counts. It shares no products with the real ProCat export Flight Centre sent.</p>
-      <p>Once the ProCat field mapping (US226) lands, the mockups get rebuilt with real data and V3 gets re-run — this board is designed to swap in that result set without changing anything else.</p>
+      <p>The <b>V3 — Content-Injected</b> numbers below are measured against the 9 mockup sites, which run on <code style="font-family:'Roboto Mono',monospace;background:var(--panel-2);padding:1px 5px;border-radius:4px;">products.js</code> — a 30-product dataset the team hand-built, including invented star ratings and review counts. It shares no products with the real ProCat export Flight Centre sent (Sarah Nystrom).</p>
+      <p>Once the ProCat field mapping (US226 / INP-66) lands, the mockups get rebuilt with real data and V3 gets re-run — this board is designed to swap in that result set without changing anything else.</p>
     </div>
   </div>
 
