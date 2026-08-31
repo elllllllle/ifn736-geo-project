@@ -1,4 +1,4 @@
-<title>GEO Visibility Board</title>
+<title>GEO Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;600;700&display=swap">
@@ -86,6 +86,10 @@
     letter-spacing:.01em; margin-top:6px; white-space:nowrap;
   }
   .masthead-row{
+    display:flex; flex-wrap:wrap; gap:20px 40px; justify-content:space-between; align-items:flex-end;
+    margin-top:16px;
+  }
+  .masthead-row{
     display:flex; flex-wrap:wrap; gap:20px 40px; align-items:flex-start;
     margin-top:16px;
   }
@@ -95,10 +99,9 @@
   }
   .meta-block{
     flex:1 1 320px; min-width:0; box-sizing:border-box;
-    display:flex; flex-direction:column; gap:8px; align-items:flex-end; text-align:right;
+    display:flex; flex-direction:column; gap:8px; align-items:flex-start; min-width:220px;
   }
   .meta-row{ display:flex; gap:8px; justify-content:flex-end; font-family:"Roboto Mono",monospace; font-size:12px; color:var(--text-lo); }
-  .meta-row b{ color:var(--text-hi); font-weight:600; }
 
   .pill{
     display:inline-flex; align-items:center; gap:6px;
@@ -263,33 +266,18 @@
   @media (prefers-reduced-motion: reduce){
     *{ transition:none !important; animation:none !important; }
   }
-
-  .site-nav{ display:flex; gap:4px; margin-bottom:14px; }
-  .site-nav-link{
-    font-family:"Roboto Mono", ui-monospace, monospace; font-size:12px; font-weight:600;
-    letter-spacing:.04em; text-decoration:none; color:var(--text-lo);
-    padding:6px 12px; border-radius:6px; border:1px solid transparent;
-  }
-  .site-nav-link.active{ color:var(--text-hi); background:var(--panel); border-color:var(--border); box-shadow:var(--shadow); }
-  .site-nav-link:hover:not(.active){ color:var(--text-hi); }
 </style>
 
 <div class="wrap">
 
-  <nav class="site-nav">
-    <a href="./" class="site-nav-link active">Dashboard</a>
-    <a href="./chat/" class="site-nav-link">Chat Demo</a>
-  </nav>
-
   <header class="masthead">
-    <div class="eyebrow">IFN736 · Group 22 · GEO Phase 2 · Sprint 3</div>
+    <div class="eyebrow" style="margin-bottom:24px;">IFN736 Industry Project (Phase 2) · Group 22</div>
     <h1>Is&nbsp;Flight&nbsp;Centre&nbsp;on&nbsp;the&nbsp;board?</h1>
     <div class="masthead-row">
-      <p class="sub">This dashboard compares three ways of testing whether AI recommends Flight Centre — recalling from memory, searching the live web, and reading FC's own page content — across 19 real travel conversations on Gemini. Explore how often FC gets mentioned under each method, and which of the 9 page-structure variants performs best.</p>
+      <p class="sub">Three ways of asking the same question — recall, live search, and content injection — run against Gemini for the 19-conversation Query Set. This board tracks how often Flight Centre actually shows up in the answer.</p>
       <div class="meta-block">
         <span class="pill warn"><span class="dot"></span>Mockup data — real ProCat mapping in progress</span>
         <div class="meta-row"><b>Model</b>&nbsp;gemini-3.5-flash-lite</div>
-        <div class="meta-row"><b>Refs</b>&nbsp;INP-32 (US208) · INP-33 (US209)</div>
         <div class="meta-row"><b>As of</b>&nbsp;31 Aug 2026</div>
       </div>
     </div>
@@ -298,8 +286,8 @@
   <div class="banner">
     <div class="icon">i</div>
     <div>
-      <p>The <b>V3 / Content-Injected</b> numbers below are measured against the 9 mockup sites, which run on <code style="font-family:'Roboto Mono',monospace;background:var(--panel-2);padding:1px 5px;border-radius:4px;">products.js</code> — a 30-product dataset the team hand-built, including invented star ratings and review counts. It shares no products with the real ProCat export Flight Centre sent (Sarah Nystrom).</p>
-      <p>Once the ProCat field mapping (US226 / INP-66) lands, the mockups get rebuilt with real data and V3 gets re-run — this board is designed to swap in that result set without changing anything else.</p>
+      <p>The <b>V3 — Content-Injected</b> numbers below are measured against the 9 mockup sites, which run on <code style="font-family:'Roboto Mono',monospace;background:var(--panel-2);padding:1px 5px;border-radius:4px;">products.js</code> — a 30-product dataset the team hand-built, including invented star ratings and review counts. It shares no products with the real ProCat export Flight Centre sent.</p>
+      <p>Once the ProCat field mapping (US226) lands, the mockups get rebuilt with real data and V3 gets re-run — this board is designed to swap in that result set without changing anything else.</p>
     </div>
   </div>
 
