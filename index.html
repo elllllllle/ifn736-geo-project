@@ -1,0 +1,584 @@
+<title>GEO Visibility Board</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;600;700&display=swap">
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --bg:#F4F6F9;
+    --panel:#FFFFFF;
+    --panel-2:#ECF0F5;
+    --border:#D8DEE7;
+    --text-hi:#161A22;
+    --text-lo:#57647A;
+    --accent:#A6690A;
+    --accent-soft:#F3E3C6;
+    --go:#1F8F6C;
+    --go-soft:#DCF1E9;
+    --gap:#C23B2E;
+    --gap-soft:#F7E1DE;
+    --slate:#6B7A94;
+    --slate-soft:#E4E9F0;
+    --shadow: 0 1px 2px rgba(22,26,34,.04), 0 8px 24px -12px rgba(22,26,34,.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12151C;
+      --panel:#1B2029;
+      --panel-2:#232936;
+      --border:#2E3644;
+      --text-hi:#ECF0F6;
+      --text-lo:#96A2B8;
+      --accent:#F0A93E;
+      --accent-soft:#3A2E13;
+      --go:#4FD8A6;
+      --go-soft:#123528;
+      --gap:#FF6B57;
+      --gap-soft:#3A1A15;
+      --slate:#8B98B0;
+      --slate-soft:#242B38;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12151C;
+    --panel:#1B2029;
+    --panel-2:#232936;
+    --border:#2E3644;
+    --text-hi:#ECF0F6;
+    --text-lo:#96A2B8;
+    --accent:#F0A93E;
+    --accent-soft:#3A2E13;
+    --go:#4FD8A6;
+    --go-soft:#123528;
+    --gap:#FF6B57;
+    --gap-soft:#3A1A15;
+    --slate:#8B98B0;
+    --slate-soft:#242B38;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text-hi);
+    font-family:"Roboto", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; padding:28px 20px 80px; }
+
+  .eyebrow{
+    font-family:"Roboto Mono", ui-monospace, monospace;
+    font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--text-lo);
+  }
+  h1,h2,h3{ text-wrap:balance; margin:0; }
+  .num{ font-variant-numeric:tabular-nums; font-family:"Roboto Mono", ui-monospace, monospace; }
+
+  a{ color:var(--accent); }
+
+  /* ============ HEADER ============ */
+  header.masthead{
+    padding-bottom:22px; margin-bottom:22px; border-bottom:1px solid var(--border);
+  }
+  .masthead h1{
+    font-family:"Roboto", ui-sans-serif, sans-serif;
+    font-weight:900; font-size:clamp(24px,3.4vw,46px); line-height:1.02;
+    letter-spacing:.01em; margin-top:6px; white-space:nowrap;
+  }
+  .masthead-row{
+    display:flex; flex-wrap:wrap; gap:20px 40px; align-items:flex-start;
+    margin-top:16px;
+  }
+  .masthead .sub{
+    flex:1 1 320px; min-width:0; box-sizing:border-box;
+    color:var(--text-lo); font-size:14.5px; margin-top:0; line-height:1.5; text-align:left;
+  }
+  .meta-block{
+    flex:1 1 320px; min-width:0; box-sizing:border-box;
+    display:flex; flex-direction:column; gap:8px; align-items:flex-end; text-align:right;
+  }
+  .meta-row{ display:flex; gap:8px; justify-content:flex-end; font-family:"Roboto Mono",monospace; font-size:12px; color:var(--text-lo); }
+  .meta-row b{ color:var(--text-hi); font-weight:600; }
+
+  .pill{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:"Roboto Mono",monospace; font-size:11px; font-weight:600; letter-spacing:.06em; text-transform:uppercase;
+    padding:5px 10px; border-radius:100px; border:1px solid transparent; white-space:nowrap;
+  }
+  .pill.warn{ background:var(--accent-soft); color:var(--accent); border-color:color-mix(in srgb, var(--accent) 35%, transparent); }
+  .pill.go{ background:var(--go-soft); color:var(--go); }
+  .pill.gap{ background:var(--gap-soft); color:var(--gap); }
+  .pill.slate{ background:var(--slate-soft); color:var(--slate); }
+  .pill .dot{ width:6px; height:6px; border-radius:50%; background:currentColor; }
+
+  /* ============ PROVENANCE BANNER ============ */
+  .banner{
+    display:flex; gap:14px; align-items:flex-start;
+    background:var(--panel); border:1px solid var(--border); border-left:4px solid var(--accent);
+    border-radius:10px; padding:16px 18px; margin-bottom:32px; box-shadow:var(--shadow);
+  }
+  .banner .icon{ font-family:"Roboto Mono",monospace; font-weight:700; color:var(--accent); font-size:13px; padding-top:1px;}
+  .banner p{ margin:0; font-size:14px; line-height:1.55; color:var(--text-hi); }
+  .banner p + p{ margin-top:6px; color:var(--text-lo); font-size:13.5px; }
+  .banner b{ color:var(--accent); }
+
+  /* ============ SECTION LABELS ============ */
+  section{ margin-bottom:44px; }
+  .section-head{ display:flex; justify-content:space-between; align-items:baseline; gap:16px; margin-bottom:16px; flex-wrap:wrap;}
+  .section-head h2{
+    font-family:"Roboto", sans-serif; font-weight:700; font-size:24px; letter-spacing:.01em;
+  }
+  .section-head .hint{ color:var(--text-lo); font-size:13px; }
+
+  /* ============ BOARD (headline rows) ============ */
+  .board{
+    background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:var(--shadow);
+  }
+  .board-row{
+    display:grid; grid-template-columns:1.5fr .9fr 1.7fr; gap:20px; align-items:center;
+    padding:20px 22px; border-bottom:1px solid var(--border);
+  }
+  .board-row:last-child{ border-bottom:none; }
+  .board-row .v-name{ font-family:"Roboto Mono",monospace; font-weight:700; font-size:14.5px; }
+  .board-row .v-sub{ color:var(--text-lo); font-size:12.5px; margin-top:4px; line-height:1.4; }
+  .board-row .v-rate{ font-size:clamp(30px,3.6vw,42px); font-weight:700; line-height:1; color:var(--accent); text-align:right; }
+  .board-row .v-rate small{ font-size:14px; font-weight:600; color:var(--text-lo); margin-left:2px; }
+  .board-row .v-detail{ font-size:13px; color:var(--text-lo); line-height:1.55; }
+  .board-row .v-detail .k{ color:var(--text-hi); font-weight:600; }
+  @media (max-width:720px){ .board-row{ grid-template-columns:1fr; text-align:left;} .board-row .v-rate{text-align:left;} }
+
+  /* ============ SIGNAL CALLOUT ============ */
+  .signal-card{
+    display:flex; gap:20px; align-items:center; margin-top:14px;
+    background:var(--go-soft); border:1px solid color-mix(in srgb, var(--go) 35%, transparent);
+    border-radius:12px; padding:18px 22px;
+  }
+  .signal-num{ font-size:44px; font-weight:700; color:var(--go); line-height:1; flex-shrink:0; }
+  .signal-num small{ font-size:18px; font-weight:600; margin-left:2px; }
+  .signal-title{ font-weight:700; font-size:14px; margin-bottom:4px; }
+  .signal-body p{ margin:0; font-size:13px; line-height:1.55; color:var(--text-hi); }
+  .signal-body p b{ color:var(--go); }
+  @media (max-width:640px){ .signal-card{ flex-direction:column; align-items:flex-start; } }
+
+  /* ============ CARD GRID ============ */
+  .grid2{ display:grid; grid-template-columns:1.15fr .85fr; gap:20px; }
+  @media (max-width:860px){ .grid2{ grid-template-columns:1fr; } }
+  .card{
+    background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:var(--shadow);
+  }
+  .card h3{ font-size:14px; font-weight:600; margin-bottom:2px; }
+  .card .card-hint{ color:var(--text-lo); font-size:12.5px; margin-bottom:16px; }
+
+  /* stage comparison chart */
+  .stage-chart{ display:flex; gap:18px; align-items:flex-end; height:190px; padding:0 4px; position:relative; }
+  .stage-chart::before{
+    content:""; position:absolute; left:0; right:0; bottom:32px; border-top:1px dashed var(--border);
+  }
+  .stage-col{ flex:1; display:flex; flex-direction:column; align-items:center; height:100%; justify-content:flex-end; gap:8px;}
+  .bars{ display:flex; gap:5px; align-items:flex-end; height:132px; }
+  .bar{ width:15px; border-radius:3px 3px 0 0; position:relative; transition:height .8s cubic-bezier(.2,.8,.2,1); }
+  .bar.baseline{ background:var(--slate); }
+  .bar.injected{ background:var(--accent); }
+  .bar .val{
+    position:absolute; top:-18px; left:50%; transform:translateX(-50%);
+    font-family:"Roboto Mono",monospace; font-size:10px; color:var(--text-lo); white-space:nowrap;
+  }
+  .stage-label{ font-family:"Roboto Mono",monospace; font-size:11px; color:var(--text-lo); text-align:center; }
+  .legend{ display:flex; gap:16px; margin-top:14px; font-family:"Roboto Mono",monospace; font-size:11.5px; color:var(--text-lo); }
+  .legend span{ display:inline-flex; align-items:center; gap:6px; }
+  .legend i{ width:10px; height:10px; border-radius:2px; display:inline-block; }
+
+  /* horizontal bars (competitors) */
+  .hbar-row{ display:grid; grid-template-columns:110px 1fr 40px; align-items:center; gap:10px; margin-bottom:12px; }
+  .hbar-row:last-child{ margin-bottom:0; }
+  .hbar-label{ font-size:12.5px; font-weight:500; }
+  .hbar-label.fc{ color:var(--accent); font-weight:700; }
+  .hbar-track{ background:var(--panel-2); border-radius:5px; height:14px; overflow:hidden; }
+  .hbar-fill{ height:100%; border-radius:5px; background:var(--slate); width:0; transition:width 1s cubic-bezier(.2,.8,.2,1); }
+  .hbar-fill.fc{ background:var(--accent); }
+  .hbar-val{ font-family:"Roboto Mono",monospace; font-size:12px; text-align:right; color:var(--text-lo); }
+
+  /* site leaderboard */
+  .leaderboard{ display:flex; flex-direction:column; gap:2px; }
+  .lb-row{
+    display:grid; grid-template-columns:30px 1.5fr 0.85fr 52px 56px 62px; gap:10px; align-items:center;
+    padding:11px 12px; border-radius:8px;
+  }
+  .lb-row.head{ font-family:"Roboto Mono",monospace; font-size:10.5px; color:var(--text-lo); text-transform:uppercase; letter-spacing:.06em; padding-bottom:8px; }
+  .lb-row:not(.head):hover{ background:var(--panel-2); }
+  .lb-row.top{ background:var(--accent-soft); }
+  .lb-row.baseline-ref{ background:transparent; border:1px dashed var(--border); }
+  .lb-rank{ font-family:"Roboto Mono",monospace; font-weight:700; font-size:13px; color:var(--text-lo); }
+  .lb-row.top .lb-rank{ color:var(--accent); }
+  .lb-name{ font-size:13.5px; font-weight:600; }
+  .lb-name small{ display:block; font-weight:400; color:var(--text-lo); font-size:11.5px; margin-top:1px; }
+  .lb-track{ background:var(--panel-2); border-radius:5px; height:10px; overflow:hidden; }
+  .lb-fill{ height:100%; border-radius:5px; background:var(--slate); width:0; transition:width 1s cubic-bezier(.2,.8,.2,1); }
+  .lb-row.top .lb-fill{ background:var(--accent); }
+  .lb-rate{ font-family:"Roboto Mono",monospace; font-size:12.5px; text-align:right; }
+  .lb-delta{ font-family:"Roboto Mono",monospace; font-size:11.5px; text-align:right; }
+  .lb-delta.pos{ color:var(--go); } .lb-delta.neg{ color:var(--gap); } .lb-delta.zero{ color:var(--text-lo); }
+  .lb-sig{ font-family:"Roboto Mono",monospace; font-size:11px; text-align:right; color:var(--text-lo); }
+  .lb-sig.close{ color:var(--accent); font-weight:600; }
+  .sig-note{
+    display:flex; gap:12px; align-items:flex-start; background:var(--accent-soft); border-radius:8px;
+    padding:12px 14px; margin-bottom:14px; font-size:12.5px; line-height:1.55; color:var(--text-hi);
+  }
+  .sig-note b{ color:var(--accent); }
+
+  /* synthesis cards */
+  .synth-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  @media (max-width:860px){ .synth-grid{ grid-template-columns:1fr; } }
+  .synth-card{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px 20px; box-shadow:var(--shadow); }
+  .synth-card .tag{ font-family:"Roboto Mono",monospace; font-size:11px; color:var(--accent); font-weight:600; letter-spacing:.04em; }
+  .synth-card h4{ font-size:15px; margin:8px 0 8px; font-weight:700; line-height:1.3; }
+  .synth-card p{ font-size:13.5px; color:var(--text-lo); line-height:1.6; margin:0; }
+
+  /* recommendations */
+  .reco-list{ display:flex; flex-direction:column; gap:0; background:var(--panel); border:1px solid var(--border); border-radius:12px; overflow:hidden; box-shadow:var(--shadow); }
+  .reco-item{ display:grid; grid-template-columns:44px 1fr; gap:16px; padding:16px 20px; border-bottom:1px solid var(--border); }
+  .reco-item:last-child{ border-bottom:none; }
+  .reco-num{ font-family:"Roboto Mono",monospace; font-weight:700; font-size:18px; color:var(--accent); }
+  .reco-item p{ margin:0; font-size:13.8px; line-height:1.55; color:var(--text-hi); }
+
+  /* limitations */
+  .limit-panel{ background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:20px 22px; box-shadow:var(--shadow); }
+  .limit-panel ul{ margin:0; padding-left:0; list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .limit-panel li{ display:grid; grid-template-columns:20px 1fr; gap:10px; font-size:13.5px; color:var(--text-lo); line-height:1.55; }
+  .limit-panel li .dash{ color:var(--gap); font-weight:700; }
+  .limit-panel li b{ color:var(--text-hi); }
+
+  /* footer / source files */
+  footer{ margin-top:56px; padding-top:22px; border-top:1px solid var(--border); }
+  .filetable{ width:100%; border-collapse:collapse; font-size:13px; }
+  .filetable th{ text-align:left; font-family:"Roboto Mono",monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-lo); font-weight:600; padding:8px 10px; border-bottom:1px solid var(--border); }
+  .filetable td{ padding:9px 10px; border-bottom:1px solid var(--border); color:var(--text-hi); }
+  .filetable td.file{ font-family:"Roboto Mono",monospace; font-size:12px; }
+  .filetable td.num{ text-align:right; font-family:"Roboto Mono",monospace; color:var(--text-lo); }
+  .foot-note{ margin-top:18px; font-size:12px; color:var(--text-lo); line-height:1.6; }
+  .foot-note code{ font-family:"Roboto Mono",monospace; background:var(--panel-2); padding:1px 5px; border-radius:4px; }
+
+  ::selection{ background:var(--accent-soft); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ transition:none !important; animation:none !important; }
+  }
+
+  .site-nav{ display:flex; gap:4px; margin-bottom:14px; }
+  .site-nav-link{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:12px; font-weight:600;
+    letter-spacing:.04em; text-decoration:none; color:var(--text-lo);
+    padding:6px 12px; border-radius:6px; border:1px solid transparent;
+  }
+  .site-nav-link.active{ color:var(--text-hi); background:var(--panel); border-color:var(--border); box-shadow:var(--shadow); }
+  .site-nav-link:hover:not(.active){ color:var(--text-hi); }
+</style>
+
+<div class="wrap">
+
+  <nav class="site-nav">
+    <a href="./" class="site-nav-link active">Dashboard</a>
+    <a href="./chat/" class="site-nav-link">Chat Demo</a>
+  </nav>
+
+  <header class="masthead">
+    <div class="eyebrow">IFN736 · Group 22 · GEO Phase 2 · Sprint 3</div>
+    <h1>Is&nbsp;Flight&nbsp;Centre&nbsp;on&nbsp;the&nbsp;board?</h1>
+    <div class="masthead-row">
+      <p class="sub">This dashboard compares three ways of testing whether AI recommends Flight Centre — recalling from memory, searching the live web, and reading FC's own page content — across 19 real travel conversations on Gemini. Explore how often FC gets mentioned under each method, and which of the 9 page-structure variants performs best.</p>
+      <div class="meta-block">
+        <span class="pill warn"><span class="dot"></span>Mockup data — real ProCat mapping in progress</span>
+        <div class="meta-row"><b>Model</b>&nbsp;gemini-3.5-flash-lite</div>
+        <div class="meta-row"><b>Refs</b>&nbsp;INP-32 (US208) · INP-33 (US209)</div>
+        <div class="meta-row"><b>As of</b>&nbsp;31 Aug 2026</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="banner">
+    <div class="icon">i</div>
+    <div>
+      <p>The <b>V3 / Content-Injected</b> numbers below are measured against the 9 mockup sites, which run on <code style="font-family:'Roboto Mono',monospace;background:var(--panel-2);padding:1px 5px;border-radius:4px;">products.js</code> — a 30-product dataset the team hand-built, including invented star ratings and review counts. It shares no products with the real ProCat export Flight Centre sent (Sarah Nystrom).</p>
+      <p>Once the ProCat field mapping (US226 / INP-66) lands, the mockups get rebuilt with real data and V3 gets re-run — this board is designed to swap in that result set without changing anything else.</p>
+    </div>
+  </div>
+
+  <!-- ===================== HEADLINE BOARD ===================== -->
+  <section>
+    <div class="section-head">
+      <h2>Three methods, one question</h2>
+      <span class="hint">FC mention rate — % of turns where Flight&nbsp;Centre is named organically</span>
+    </div>
+    <div class="board" id="board"></div>
+    <div class="signal-card">
+      <div class="signal-num num">97<small>%</small></div>
+      <div class="signal-body">
+        <div class="signal-title">The result that actually holds up</div>
+        <p>263 of 271 injected mentions name Flight&nbsp;Centre as the <b>first</b> brand in the response — versus organic baseline, where every mention scored “Listed” and none led. This prominence shift holds across all 9 site variants regardless of which one wins the mention-rate ranking below (which isn't statistically significant yet — see that section).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== STAGE + COMPETITORS ===================== -->
+  <section>
+    <div class="grid2">
+      <div class="card">
+        <h3>Where in the journey does FC show up?</h3>
+        <div class="card-hint">Mention rate by journey stage — baseline recall vs. once FC's content is injected</div>
+        <div class="stage-chart" id="stageChart"></div>
+        <div class="legend">
+          <span><i style="background:var(--slate)"></i>V1 — Baseline (recall only)</span>
+          <span><i style="background:var(--accent)"></i>V3 — Content-injected</span>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Who gets named instead</h3>
+        <div class="card-hint">Brand mentions across the same 79 baseline turns</div>
+        <div id="competitorChart"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SITE LEADERBOARD ===================== -->
+  <section>
+    <div class="section-head">
+      <h2>V3 site-variant leaderboard</h2>
+      <span class="hint">Excl. Book turn · 9 mockup variants × 19 conversations</span>
+    </div>
+    <div class="card">
+      <div class="sig-note">
+        <span>⚠</span>
+        <span><b>Book turn excluded, direction only.</b> It's saturated at 99.4% across every variant including baseline, so leaving it in would inflate all nine equally. Even with it excluded, none of these differences clear conventional significance (p-values, right) — read this as a prioritised re-test list, not a settled ranking. Full-inclusive rates and stats in <code style="font-family:'Roboto Mono',monospace;background:var(--panel-2);padding:1px 5px;border-radius:4px;">GEO_Injection_Statistical_Review_Yuva.docx</code>.</span>
+      </div>
+      <div class="leaderboard" id="leaderboard">
+        <div class="lb-row head">
+          <div>Rank</div><div>Variant</div><div>Mention rate</div><div style="text-align:right">Rate</div><div style="text-align:right">vs. base</div><div style="text-align:right">p-value</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== SYNTHESIS ===================== -->
+  <section>
+    <div class="section-head"><h2>What it adds up to</h2></div>
+    <div class="synth-grid">
+      <div class="synth-card">
+        <div class="tag">4.1</div>
+        <h4>The same 3 conversations win, every method</h4>
+        <p>Q01 (Bali couple), Q02 (family, domestic) and Q08 (family, Fiji) are the only scenarios that ever surface FC — in recall, in live search, and once content is injected. Every other persona (solo, backpacker, senior, corporate, last-minute, adventure) never produces an organic mention, method notwithstanding.</p>
+      </div>
+      <div class="synth-card">
+        <div class="tag">4.2</div>
+        <h4>Discoverability is the bigger lever</h4>
+        <p>The 5.1% → 38.1% jump only happens once FC's content is already in the conversation. Search grounding alone barely moves reach (5.1% → 23.8%, same 3 conversations) — the problem is being considered as a candidate at all, not page structure.</p>
+      </div>
+      <div class="synth-card">
+        <div class="tag">4.3</div>
+        <h4>Structure looks promising, isn't proven yet</h4>
+        <p>Excl. Book turn, full composite pages with tables (V4, Site B) lead baseline by 10-12 points — the largest gaps found — but none of the 9 variants clear statistical significance at this sample size. A lead worth re-testing, not a settled result. What does hold up regardless: the 97% named-first shift above.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RECOMMENDATIONS ===================== -->
+  <section>
+    <div class="section-head"><h2>Recommendations</h2></div>
+    <div class="reco-list" id="recoList"></div>
+  </section>
+
+  <!-- ===================== LIMITATIONS ===================== -->
+  <section>
+    <div class="section-head"><h2>Read this with</h2></div>
+    <div class="limit-panel">
+      <ul id="limitList"></ul>
+    </div>
+  </section>
+
+  <footer>
+    <div class="eyebrow" style="margin-bottom:10px;">Source files</div>
+    <div style="overflow-x:auto;">
+      <table class="filetable">
+        <thead><tr><th>Version</th><th>Result file</th><th style="text-align:right">Rows</th></tr></thead>
+        <tbody id="fileTable"></tbody>
+      </table>
+    </div>
+    <p class="foot-note">All rubric scores (Relevance, Response Quality, Exposure, Faithful Credit, Causal Impact, Readability &amp; Structure, Trustworthiness) are unverified Gemini self-scores — a first-pass signal, not final numbers, until human spot-checked. <code>FC Mentioned</code> is a deterministic string match and is reliable as-is. Full detail in <code>GEO_Three_Version_Findings.docx</code>.</p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- DATA ----------
+  var versions = [
+    { name:'V1 — Baseline', sub:'Recall only — no tools, no injected content', rate:5.1, sample:'4 / 79 turns', convos:'3 of 19 conversations', note:'16 of 19 conversations never mention FC at all, in any turn.' },
+    { name:'V2 — Search-Grounded', sub:'Manual, live Google Search grounding (5-convo subset)', rate:23.8, sample:'5 / 21 turns', convos:'3 of 5 tested', note:'Same 3 conversations as V1 — live search didn’t reach a single new scenario.' },
+    { name:'V3 — Content-Injected', sub:'FC’s own mockup-site content pasted into turn 1', rate:38.1, sample:'271 / 711 turns', convos:'9 site variants × 19 conversations', note:'97% of these mentions name FC first — the strongest result of the three versions.' }
+  ];
+
+  var stages = ['Dream','Plan','Engage','Book','Pre-trip'];
+  var baselineStage = [0,0,10.5,10.5,0];
+  var injectedStage = [12.9,7.6,31.0,99.4,48.1];
+
+  var competitors = [
+    { name:'Booking.com', val:18 },
+    { name:'Expedia', val:17 },
+    { name:'Google Flights', val:11 },
+    { name:'Skyscanner', val:9 },
+    { name:'Flight Centre', val:4, fc:true }
+  ];
+
+  // Rates below EXCLUDE the Book turn (99.4% mention rate across every variant incl. baseline —
+  // it saturates and inflates all nine equally, hiding the real comparison). Full-inclusive rates
+  // are shown as a secondary figure. Significance = Fisher's exact vs. Site A-Baseline, excl. Book.
+  var siteVariants = [
+    { rank:'1', name:'V4 — Full + Tables', sub:'Schema + FAQ + stats + tables + citations', rate:28.3, full:45.6, delta:11.6, p:'0.189', top:true },
+    { rank:'2', name:'Site B — Full composite', sub:'Multi-element competitor-style page', rate:26.7, full:44.3, delta:10.0, p:'0.268', top:true },
+    { rank:'3', name:'P4 — Tables only', sub:'Structured comparison tables, no schema', rate:20.0, full:39.2, delta:3.3, p:'0.814' },
+    { rank:'3', name:'V1 — Schema only', sub:'TravelAgency / Product schema markup', rate:20.0, full:39.2, delta:3.3, p:'0.814' },
+    { rank:'5', name:'P3 — Statistics only', sub:'Embedded stat callouts', rate:18.3, full:36.7, delta:1.6, p:'1.000' },
+    { rank:'—', name:'Site A — Unoptimised', sub:'Reference / control page', rate:16.7, full:36.7, delta:0, p:'—', ref:true },
+    { rank:'7', name:'P5 — Citations only', sub:'Source-style citation markup', rate:13.3, full:34.2, delta:-3.3, p:'0.799' },
+    { rank:'7', name:'V2 — Schema + FAQ', sub:'Schema markup + FAQ section', rate:13.3, full:34.2, delta:-3.3, p:'0.799' },
+    { rank:'9', name:'P2 — FAQ only', sub:'FAQPage schema, isolated', rate:11.7, full:32.9, delta:-5.0, p:'0.602' }
+  ];
+
+  var recos = [
+    'Lead any external summary with the ranking-position finding, not the mention-rate ladder: once FC’s content is available, 97% of mentions name it first, vs. organic mentions always being “Listed.” Best-evidenced result in the study.',
+    'Report V3 rates with the Book turn excluded, with p-values attached — it’s saturated at 99.4% across every variant including baseline, so it inflates all nine equally and hides the real comparison.',
+    'Treat full-composite, table-rich pages (V4, Site B) as the leading hypothesis worth re-testing, not a confirmed recommendation — none of the 9 variants clear conventional significance yet (~3x the current sample is needed).',
+    'Don’t yet conclude FAQ-only or citations-only markup hurts. Both trail baseline by only 3–5 mentions out of 60 (p = 0.60–0.80) — not distinguishable from noise at this sample size.',
+    'Treat visibility/presence as the higher-priority problem. Structure improvements have limited impact if FC isn’t a candidate at all for 16 of 19 scenarios — that needs broader content coverage, not page-level restructuring.',
+    'Have a human spot-check a sample of the LLM-judge rubric scores before reporting externally. The FC-mention finding is a reliable deterministic match; the 0–3 rubric scores carry self-scoring bias risk.',
+    'Extend V2 (search-grounded) to the full 19-conversation set to confirm the “same conversations regardless of method” finding holds at full scale. In progress — INP-156.'
+  ];
+
+  var limitations = [
+    '<b>Gemini only</b> — GPT-4, Claude and Perplexity were out of scope for automated testing. These findings describe Gemini’s behaviour specifically, not AI search behaviour in general.',
+    '<b>LLM self-scoring</b> — the 8 rubric metrics across all three versions are unverified Gemini self-scores, flagged as needing human verification.',
+    '<b>V2 sample size</b> — search-grounded covers 5 of 19 conversations, collected manually. Trust the direction more than the exact percentage.',
+    '<b>V3 ranking not significant</b> — Fisher’s exact p = 0.19–1.0 per variant vs. baseline, chi-square p = 0.22 across all 9 (excl. Book). Treat the leaderboard below as a prioritised re-test list, not a proven result. Full detail in <code>GEO_Injection_Statistical_Review_Yuva.docx</code>.',
+    '<b>Run-to-run noise</b> — baseline was run twice this sprint on identical scripted turns; 2 of 4 FC mentions’ Ranking Position changed between runs (avg. 3.25 → 1.75) purely from the model generating a different organic answer the second time. A separate source of noise from self-scoring bias, above.',
+    '<b>Scripted turns</b> — conversation wording is fixed rather than adapted to the AI’s actual prior answer, a Query Set design limitation shared by all three versions.',
+    '<b>Synthetic V3 content</b> — mockup sites use invented <code>products.js</code> data, not FC’s real ProCat catalogue. See the banner above — this is being closed out via US226.'
+  ];
+
+  var files = [
+    ['V1 — Baseline', 'multi_turn_query19_results.csv', '79'],
+    ['V2 — Search-Grounded (manual)', 'Manual_Grounded_Test_Template_scored.xlsx', '21'],
+    ['V3 — Content-Injected', 'multi_turn_query19_injection_results_ALL.csv', '711'],
+    ['V3 — Statistical review (Yuva)', 'GEO_Injection_Statistical_Review_Yuva.docx', '—']
+  ];
+
+  // ---------- RENDER: headline board ----------
+  var board = document.getElementById('board');
+  versions.forEach(function(v){
+    var row = document.createElement('div');
+    row.className = 'board-row';
+    row.innerHTML =
+      '<div><div class="v-name">'+v.name+'</div><div class="v-sub">'+v.sub+'</div></div>'+
+      '<div class="v-rate num" data-target="'+v.rate+'">0<small>%</small></div>'+
+      '<div class="v-detail"><span class="k">'+v.sample+'</span> · '+v.convos+'<br>'+v.note+'</div>';
+    board.appendChild(row);
+  });
+
+  // ---------- RENDER: stage chart ----------
+  var stageChart = document.getElementById('stageChart');
+  var maxStage = 100;
+  stages.forEach(function(s, i){
+    var col = document.createElement('div');
+    col.className = 'stage-col';
+    var bH = Math.max(2, (baselineStage[i]/maxStage)*132);
+    var iH = Math.max(2, (injectedStage[i]/maxStage)*132);
+    col.innerHTML =
+      '<div class="bars">'+
+        '<div class="bar baseline" style="height:0" data-h="'+bH+'"><span class="val">'+baselineStage[i]+'%</span></div>'+
+        '<div class="bar injected" style="height:0" data-h="'+iH+'"><span class="val">'+injectedStage[i]+'%</span></div>'+
+      '</div>'+
+      '<div class="stage-label">'+s+'</div>';
+    stageChart.appendChild(col);
+  });
+
+  // ---------- RENDER: competitor bars ----------
+  var compWrap = document.getElementById('competitorChart');
+  var maxComp = Math.max.apply(null, competitors.map(function(c){return c.val;}));
+  competitors.forEach(function(c){
+    var row = document.createElement('div');
+    row.className = 'hbar-row';
+    row.innerHTML =
+      '<div class="hbar-label'+(c.fc?' fc':'')+'">'+c.name+'</div>'+
+      '<div class="hbar-track"><div class="hbar-fill'+(c.fc?' fc':'')+'" data-w="'+(c.val/maxComp*100)+'"></div></div>'+
+      '<div class="hbar-val">'+c.val+'</div>';
+    compWrap.appendChild(row);
+  });
+
+  // ---------- RENDER: leaderboard ----------
+  var lb = document.getElementById('leaderboard');
+  var lbMax = Math.max.apply(null, siteVariants.map(function(s){return s.rate;}));
+  siteVariants.forEach(function(s){
+    var row = document.createElement('div');
+    row.className = 'lb-row' + (s.top?' top':'') + (s.ref?' baseline-ref':'');
+    var deltaClass = s.ref ? 'zero' : (s.delta > 0 ? 'pos' : (s.delta < 0 ? 'neg' : 'zero'));
+    var deltaText = s.ref ? 'ref.' : (s.delta > 0 ? '+'+s.delta : (s.delta === 0 ? '0.0' : s.delta));
+    var sigClose = !s.ref && parseFloat(s.p) < 0.3;
+    row.innerHTML =
+      '<div class="lb-rank">'+s.rank+'</div>'+
+      '<div class="lb-name">'+s.name+'<small>'+s.sub+' · '+s.full+'% incl. Book</small></div>'+
+      '<div class="lb-track"><div class="lb-fill" data-w="'+(s.rate/lbMax*100)+'"></div></div>'+
+      '<div class="lb-rate num">'+s.rate+'%</div>'+
+      '<div class="lb-delta num '+deltaClass+'">'+deltaText+'</div>'+
+      '<div class="lb-sig num'+(sigClose?' close':'')+'">'+(s.p==='—'?'—':'p='+s.p)+'</div>';
+    lb.appendChild(row);
+  });
+
+  // ---------- RENDER: recommendations ----------
+  var recoList = document.getElementById('recoList');
+  recos.forEach(function(r, i){
+    var item = document.createElement('div');
+    item.className = 'reco-item';
+    item.innerHTML = '<div class="reco-num">'+String(i+1).padStart(2,'0')+'</div><p>'+r+'</p>';
+    recoList.appendChild(item);
+  });
+
+  // ---------- RENDER: limitations ----------
+  var limitList = document.getElementById('limitList');
+  limitations.forEach(function(l){
+    var li = document.createElement('li');
+    li.innerHTML = '<span class="dash">—</span><span>'+l+'</span>';
+    limitList.appendChild(li);
+  });
+
+  // ---------- RENDER: file table ----------
+  var fileTable = document.getElementById('fileTable');
+  files.forEach(function(f){
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>'+f[0]+'</td><td class="file">'+f[1]+'</td><td class="num">'+f[2]+'</td>';
+    fileTable.appendChild(tr);
+  });
+
+  // ---------- ANIMATE IN ----------
+  function animate(){
+    document.querySelectorAll('.bar').forEach(function(b){ b.style.height = b.dataset.h + 'px'; });
+    document.querySelectorAll('.hbar-fill').forEach(function(b){ b.style.width = b.dataset.w + '%'; });
+    document.querySelectorAll('.lb-fill').forEach(function(b){ b.style.width = b.dataset.w + '%'; });
+
+    document.querySelectorAll('.v-rate').forEach(function(el){
+      var target = parseFloat(el.dataset.target);
+      if (reduceMotion){ el.childNodes[0].nodeValue = target; return; }
+      var start = null, dur = 900;
+      function step(ts){
+        if(!start) start = ts;
+        var p = Math.min(1, (ts-start)/dur);
+        var eased = 1 - Math.pow(1-p, 3);
+        el.childNodes[0].nodeValue = (target*eased).toFixed(1);
+        if(p<1) requestAnimationFrame(step);
+        else el.childNodes[0].nodeValue = target;
+      }
+      requestAnimationFrame(step);
+    });
+  }
+  requestAnimationFrame(function(){ requestAnimationFrame(animate); });
+})();
+</script>

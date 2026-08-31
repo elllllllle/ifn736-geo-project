@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Chat Demo — Coming Soon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#F4F6F9; --panel:#FFFFFF; --panel-2:#ECF0F5; --border:#D8DEE7;
+    --text-hi:#161A22; --text-lo:#57647A; --accent:#A6690A; --accent-soft:#F3E3C6;
+    --shadow: 0 1px 2px rgba(22,26,34,.04), 0 8px 24px -12px rgba(22,26,34,.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12151C; --panel:#1B2029; --panel-2:#232936; --border:#2E3644;
+      --text-hi:#ECF0F6; --text-lo:#96A2B8; --accent:#F0A93E; --accent-soft:#3A2E13;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12151C; --panel:#1B2029; --panel-2:#232936; --border:#2E3644;
+    --text-hi:#ECF0F6; --text-lo:#96A2B8; --accent:#F0A93E; --accent-soft:#3A2E13;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--text-hi);
+    font-family:"Roboto", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; flex-direction:column;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; padding:28px 20px 80px; width:100%; }
+  .eyebrow{
+    font-family:"Roboto Mono", ui-monospace, monospace;
+    font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--text-lo);
+  }
+  .site-nav{ display:flex; gap:4px; margin-bottom:14px; }
+  .site-nav-link{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:12px; font-weight:600;
+    letter-spacing:.04em; text-decoration:none; color:var(--text-lo);
+    padding:6px 12px; border-radius:6px; border:1px solid transparent;
+  }
+  .site-nav-link.active{ color:var(--text-hi); background:var(--panel); border-color:var(--border); box-shadow:var(--shadow); }
+  .site-nav-link:hover:not(.active){ color:var(--text-hi); }
+  main{ flex:1; display:flex; align-items:center; justify-content:center; }
+  .card{
+    background:var(--panel); border:1px solid var(--border); border-radius:14px;
+    box-shadow:var(--shadow); padding:48px 44px; max-width:560px; text-align:center;
+  }
+  .card .badge{
+    display:inline-flex; align-items:center; gap:6px; font-family:"Roboto Mono", ui-monospace, monospace;
+    font-size:11px; font-weight:600; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--accent); background:var(--accent-soft); padding:5px 12px; border-radius:999px;
+    margin-bottom:18px;
+  }
+  h1{ font-size:26px; margin:0 0 12px; text-wrap:balance; }
+  p{ color:var(--text-lo); line-height:1.55; margin:0 0 8px; font-size:14.5px; }
+  .back{
+    display:inline-block; margin-top:22px; font-family:"Roboto Mono", ui-monospace, monospace;
+    font-size:13px; font-weight:600; color:var(--accent); text-decoration:none;
+  }
+  .back:hover{ text-decoration:underline; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <nav class="site-nav">
+      <a href="../" class="site-nav-link">Dashboard</a>
+      <a href="./" class="site-nav-link active">Chat Demo</a>
+    </nav>
+  </div>
+  <main>
+    <div class="card">
+      <span class="badge">Coming soon</span>
+      <h1>Interactive chat demo</h1>
+      <p>This page will host the live chat interface for the GEO Phase 2 prototype — a working demo where you can ask a travel question and see whether Flight Centre gets recommended.</p>
+      <p>Placeholder for now so the site structure and URL are already live at <code>/chat/</code>.</p>
+      <a class="back" href="../">← Back to the dashboard</a>
+    </div>
+  </main>
+</body>
+</html>
