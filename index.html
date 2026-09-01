@@ -1,4 +1,9 @@
-<title>GEO Dashboard</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Phase 2 — Findings</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;600;700&display=swap">
@@ -209,7 +214,7 @@
   }
   .lb-row.head{ font-family:"Roboto Mono",monospace; font-size:10.5px; color:var(--text-lo); text-transform:uppercase; letter-spacing:.06em; padding-bottom:8px; }
   .lb-row:not(.head):hover{ background:var(--panel-2); }
-  .lb-row.top{ background:var(--accent-soft); }
+  .lb-row.top{ background:transparent; }
   .lb-row.baseline-ref{ background:transparent; border:1px dashed var(--border); }
   .lb-rank{ font-family:"Roboto Mono",monospace; font-weight:700; font-size:13px; color:var(--text-lo); }
   .lb-row.top .lb-rank{ color:var(--accent); }
@@ -267,22 +272,27 @@
     *{ transition:none !important; animation:none !important; }
   }
 
-  .site-nav{ display:flex; gap:4px; margin-bottom:14px; }
+  .topbar{ background:var(--panel); border-bottom:1px solid var(--border); }
+  .topbar-inner{ max-width:1180px; margin:0 auto; padding:14px 20px; display:flex; justify-content:center; gap:8px; }
   .site-nav-link{
     font-family:"Roboto Mono", ui-monospace, monospace; font-size:12px; font-weight:600;
     letter-spacing:.04em; text-decoration:none; color:var(--text-lo);
-    padding:6px 12px; border-radius:6px; border:1px solid transparent;
+    padding:8px 16px; border-radius:6px; border:1px solid transparent;
   }
-  .site-nav-link.active{ color:var(--text-hi); background:var(--panel); border-color:var(--border); box-shadow:var(--shadow); }
+  .site-nav-link.active{ color:var(--text-hi); background:var(--panel-2); border-color:var(--border); }
   .site-nav-link:hover:not(.active){ color:var(--text-hi); }
 </style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-inner">
+    <a href="./" class="site-nav-link active">Findings</a>
+    <a href="./chat/" class="site-nav-link">Chat Demo</a>
+  </div>
+</nav>
 
 <div class="wrap">
-
-  <nav class="site-nav">
-    <a href="./" class="site-nav-link active">Dashboard</a>
-    <a href="./chat/" class="site-nav-link">Chat Demo</a>
-  </nav>
 
   <header class="masthead">
     <div class="eyebrow" style="margin-bottom:24px;">IFN736 Industry Project (Phase 2) · Group 22</div>
@@ -584,3 +594,5 @@
   requestAnimationFrame(function(){ requestAnimationFrame(animate); });
 })();
 </script>
+</body>
+</html>
