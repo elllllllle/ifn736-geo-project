@@ -375,14 +375,14 @@
     <div class="section-head"><h2>What it adds up to</h2></div>
     <div class="synth-grid">
       <div class="synth-card">
-        <div class="tag">4.1</div>
-        <h4>The same 3 conversations win, every method</h4>
-        <p>Q01 (Bali couple), Q02 (family, domestic) and Q08 (family, Fiji) are the only scenarios that ever surface FC — in recall, in live search, and once content is injected. Every other persona (solo, backpacker, senior, corporate, last-minute, adventure) never produces an organic mention, method notwithstanding.</p>
+                <div class="tag">4.1</div>
+        <h4>Recall and search stay narrow — injection reaches everyone</h4>
+        <p>V1 (recall) and V2 (search grounding) surface FC in only 3–4 of 19 conversations — Q01 (Bali couple), Q02 (family, domestic), Q08 (family, Fiji), plus Q18 under search grounding. But once FC's own content is injected, all 19 conversations produce at least one mention (25%–75% of turns each). The ceiling isn't which persona asks — it's whether FC's content is in the conversation at all.</p>
       </div>
       <div class="synth-card">
         <div class="tag">4.2</div>
         <h4>Discoverability is the bigger lever</h4>
-        <p>The 5.1% → 38.1% jump only happens once FC's content is already in the conversation. Search grounding alone barely moves reach (5.1% → 23.8%, same 3 conversations) — the problem is being considered as a candidate at all, not page structure.</p>
+                <p>The 5.1% → 38.1% jump only happens once FC's content is already in the conversation. Search grounding alone barely moves reach (5.1% → 7.6%, only 1 new conversation out of 19) — the problem is being considered as a candidate at all, not page structure.</p>
       </div>
       <div class="synth-card">
         <div class="tag">4.3</div>
@@ -426,7 +426,7 @@
   // ---------- DATA ----------
   var versions = [
     { name:'V1 — Baseline', sub:'Recall only — no tools, no injected content', rate:5.1, sample:'4 / 79 turns', convos:'3 of 19 conversations', note:'16 of 19 conversations never mention FC at all, in any turn.' },
-    { name:'V2 — Search-Grounded', sub:'Manual, live Google Search grounding (5-convo subset)', rate:23.8, sample:'5 / 21 turns', convos:'3 of 5 tested', note:'Same 3 conversations as V1 — live search didn’t reach a single new scenario.' },
+    { name:'V2 — Search-Grounded', sub:'Manual, live Google Search grounding — full 19-conversation set', rate:7.6, sample:'6 / 79 turns', convos:'4 of 19 conversations', note:'Reaches 1 new conversation beyond V1 (Q18) — still narrow, and every mention is "Listed," never "Recommended."' },
     { name:'V3 — Content-Injected', sub:'FC’s own mockup-site content pasted into turn 1', rate:38.1, sample:'271 / 711 turns', convos:'9 site variants × 19 conversations', note:'97% of these mentions name FC first — the strongest result of the three versions.' }
   ];
 
@@ -464,13 +464,13 @@
     'Don’t yet conclude FAQ-only or citations-only markup hurts. Both trail baseline by only 3–5 mentions out of 60 (p = 0.60–0.80) — not distinguishable from noise at this sample size.',
     'Treat visibility/presence as the higher-priority problem. Structure improvements have limited impact if FC isn’t a candidate at all for 16 of 19 scenarios — that needs broader content coverage, not page-level restructuring.',
     'Have a human spot-check a sample of the LLM-judge rubric scores before reporting externally. The FC-mention finding is a reliable deterministic match; the 0–3 rubric scores carry self-scoring bias risk.',
-    'Extend V2 (search-grounded) to the full 19-conversation set to confirm the “same conversations regardless of method” finding holds at full scale. In progress — INP-156.'
+    'V2 (search-grounded) has now been extended to the full 19-conversation set — closes INP-156. Confirms recall and search grounding both stay narrow (3–4 of 19 conversations); update any earlier materials still citing the 5-conversation subset or the "same 3 conversations, every method" framing.'
   ];
 
   var limitations = [
     '<b>Gemini only</b> — GPT-4, Claude and Perplexity were out of scope for automated testing. These findings describe Gemini’s behaviour specifically, not AI search behaviour in general.',
     '<b>LLM self-scoring</b> — the 8 rubric metrics across all three versions are unverified Gemini self-scores, flagged as needing human verification.',
-    '<b>V2 sample size</b> — search-grounded covers 5 of 19 conversations, collected manually. Trust the direction more than the exact percentage.',
+    '<b>V2 collected manually</b> — now covers the full 19-conversation set, but each turn was run and scored by hand rather than through the automated harness used for V1/V3, so repeat-run consistency was not tested the way it was for V1.',
     '<b>V3 ranking not significant</b> — Fisher’s exact p = 0.19–1.0 per variant vs. baseline, chi-square p = 0.22 across all 9 (excl. Book). Treat the leaderboard below as a prioritised re-test list, not a proven result. Full detail in <code>GEO_Injection_Statistical_Review_Yuva.docx</code>.',
     '<b>Run-to-run noise</b> — baseline was run twice this sprint on identical scripted turns; 2 of 4 FC mentions’ Ranking Position changed between runs (avg. 3.25 → 1.75) purely from the model generating a different organic answer the second time. A separate source of noise from self-scoring bias, above.',
     '<b>Scripted turns</b> — conversation wording is fixed rather than adapted to the AI’s actual prior answer, a Query Set design limitation shared by all three versions.',
@@ -479,7 +479,7 @@
 
   var files = [
     ['V1 — Baseline', 'multi_turn_query19_results.csv', '79'],
-    ['V2 — Search-Grounded (manual)', 'Manual_Grounded_Test_Template_scored.xlsx', '21'],
+    ['V2 — Search-Grounded (manual)', 'Manual_Grounded_Test_Template_scored.xlsx', '79'],
     ['V3 — Content-Injected', 'multi_turn_query19_injection_results_ALL.csv', '711'],
     ['V3 — Statistical review (Yuva)', 'GEO_Injection_Statistical_Review_Yuva.docx', '—']
   ];
