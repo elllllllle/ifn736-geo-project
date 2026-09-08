@@ -220,6 +220,8 @@
   .lb-row.top .lb-rank{ color:var(--accent); }
   .lb-name{ font-size:13.5px; font-weight:600; }
   .lb-name small{ display:block; font-weight:400; color:var(--text-lo); font-size:11.5px; margin-top:1px; }
+  .lb-view{ font-size:11px; font-weight:400; color:var(--text-lo); text-decoration:none; }
+  .lb-view:hover{ color:var(--accent); }
   .lb-track{ background:var(--panel-2); border-radius:5px; height:10px; overflow:hidden; }
   .lb-fill{ height:100%; border-radius:5px; background:var(--slate); width:0; transition:width 1s cubic-bezier(.2,.8,.2,1); }
   .lb-row.top .lb-fill{ background:var(--accent); }
@@ -355,7 +357,9 @@
   <section>
     <div class="section-head">
       <h2>V3 site-variant leaderboard</h2>
-      <span class="hint">Excl. Book turn · 9 mockup variants × 19 conversations</span>
+      <span class="hint">Excl. Book turn · 9 mockup variants × 19 conversations ·
+        <a href="https://akshaysomis.github.io/geo-research-phase2/" target="_blank" rel="noopener">browse all 9 pages ↗</a>
+      </span>
     </div>
     <div class="card">
       <div class="sig-note">
@@ -445,16 +449,17 @@
   // Rates below EXCLUDE the Book turn (99.4% mention rate across every variant incl. baseline —
   // it saturates and inflates all nine equally, hiding the real comparison). Full-inclusive rates
   // are shown as a secondary figure. Significance = Fisher's exact vs. Site A-Baseline, excl. Book.
+  var MOCKUP_BASE = 'https://akshaysomis.github.io/geo-research-phase2/';
   var siteVariants = [
-    { rank:'1', name:'V4 — Full + Tables', sub:'Schema + FAQ + stats + tables + citations', rate:28.3, full:45.6, delta:11.6, p:'0.189', top:true },
-    { rank:'2', name:'Site B — Full composite', sub:'Multi-element competitor-style page', rate:26.7, full:44.3, delta:10.0, p:'0.268', top:true },
-    { rank:'3', name:'P4 — Tables only', sub:'Structured comparison tables, no schema', rate:20.0, full:39.2, delta:3.3, p:'0.814' },
-    { rank:'3', name:'V1 — Schema only', sub:'TravelAgency / Product schema markup', rate:20.0, full:39.2, delta:3.3, p:'0.814' },
-    { rank:'5', name:'P3 — Statistics only', sub:'Embedded stat callouts', rate:18.3, full:36.7, delta:1.6, p:'1.000' },
-    { rank:'—', name:'Site A — Unoptimised', sub:'Reference / control page', rate:16.7, full:36.7, delta:0, p:'—', ref:true },
-    { rank:'7', name:'P5 — Citations only', sub:'Source-style citation markup', rate:13.3, full:34.2, delta:-3.3, p:'0.799' },
-    { rank:'7', name:'V2 — Schema + FAQ', sub:'Schema markup + FAQ section', rate:13.3, full:34.2, delta:-3.3, p:'0.799' },
-    { rank:'9', name:'P2 — FAQ only', sub:'FAQPage schema, isolated', rate:11.7, full:32.9, delta:-5.0, p:'0.602' }
+    { rank:'1', name:'V4 — Full + Tables', sub:'Schema + FAQ + stats + tables + citations', rate:28.3, full:45.6, delta:11.6, p:'0.189', top:true, url:MOCKUP_BASE+'10_fc_variant4_full_with_tables.html' },
+    { rank:'2', name:'Site B — Full composite', sub:'Multi-element competitor-style page', rate:26.7, full:44.3, delta:10.0, p:'0.268', top:true, url:MOCKUP_BASE+'02_fc_optimised.html' },
+    { rank:'3', name:'P4 — Tables only', sub:'Structured comparison tables, no schema', rate:20.0, full:39.2, delta:3.3, p:'0.814', url:MOCKUP_BASE+'13_fc_p4_tables_only.html' },
+    { rank:'3', name:'V1 — Schema only', sub:'TravelAgency / Product schema markup', rate:20.0, full:39.2, delta:3.3, p:'0.814', url:MOCKUP_BASE+'08_fc_variant1_schema_only.html' },
+    { rank:'5', name:'P3 — Statistics only', sub:'Embedded stat callouts', rate:18.3, full:36.7, delta:1.6, p:'1.000', url:MOCKUP_BASE+'12_fc_p3_stats_only.html' },
+    { rank:'—', name:'Site A — Unoptimised', sub:'Reference / control page', rate:16.7, full:36.7, delta:0, p:'—', ref:true, url:MOCKUP_BASE+'01_fc_unoptimised.html' },
+    { rank:'7', name:'P5 — Citations only', sub:'Source-style citation markup', rate:13.3, full:34.2, delta:-3.3, p:'0.799', url:MOCKUP_BASE+'14_fc_p5_citations_only.html' },
+    { rank:'7', name:'V2 — Schema + FAQ', sub:'Schema markup + FAQ section', rate:13.3, full:34.2, delta:-3.3, p:'0.799', url:MOCKUP_BASE+'09_fc_variant2_schema_faq.html' },
+    { rank:'9', name:'P2 — FAQ only', sub:'FAQPage schema, isolated', rate:11.7, full:32.9, delta:-5.0, p:'0.602', url:MOCKUP_BASE+'11_fc_p2_faq_only.html' }
   ];
 
   var recos = [
@@ -537,7 +542,8 @@
     var sigClose = !s.ref && parseFloat(s.p) < 0.3;
     row.innerHTML =
       '<div class="lb-rank">'+s.rank+'</div>'+
-      '<div class="lb-name">'+s.name+'<small>'+s.sub+' · '+s.full+'% incl. Book</small></div>'+
+      '<div class="lb-name">'+s.name+' <a class="lb-view" href="'+s.url+'" target="_blank" rel="noopener" title="Open this mockup page">↗</a>'+
+        '<small>'+s.sub+' · '+s.full+'% incl. Book</small></div>'+
       '<div class="lb-track"><div class="lb-fill" data-w="'+(s.rate/lbMax*100)+'"></div></div>'+
       '<div class="lb-rate num">'+s.rate+'%</div>'+
       '<div class="lb-delta num '+deltaClass+'">'+deltaText+'</div>'+

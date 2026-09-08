@@ -108,6 +108,27 @@
   .mode-btn.active b{ color:var(--accent); }
   .mode-btn:disabled{ opacity:.55; cursor:not-allowed; }
 
+  .mode-hint{ margin-top:8px; font-size:11.5px; }
+  .mode-hint a{ color:var(--text-lo); }
+  .mode-hint a:hover{ color:var(--accent); }
+
+  .injected-wrap{ margin-top:10px; }
+  .injected-disclosure{
+    border:1px solid var(--border); border-radius:8px; background:var(--panel-2); padding:8px 12px;
+  }
+  .injected-disclosure summary{
+    cursor:pointer; font-family:"Roboto Mono", ui-monospace, monospace; font-size:11px; font-weight:600;
+    color:var(--text-lo); letter-spacing:.02em; list-style:none;
+  }
+  .injected-disclosure summary::-webkit-details-marker{ display:none; }
+  .injected-disclosure summary::before{ content:"▸ "; }
+  .injected-disclosure[open] summary::before{ content:"▾ "; }
+  .injected-pre{
+    margin:10px 0 2px; padding:10px; border-radius:6px; background:var(--panel); border:1px solid var(--border);
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:11px; line-height:1.5; color:var(--text-hi);
+    white-space:pre-wrap; word-break:break-word; max-height:220px; overflow-y:auto;
+  }
+
   .key-input{
     width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
     background:var(--panel); color:var(--text-hi); font-family:"Roboto Mono", ui-monospace, monospace;
@@ -137,6 +158,50 @@
   .msg.ai .bubble{ background:var(--panel-2); border:1px solid var(--border); border-bottom-left-radius:4px; }
   .msg-meta{ display:flex; gap:6px; align-items:center; margin-top:6px; }
   .msg-meta .who{ font-family:"Roboto Mono", ui-monospace, monospace; font-size:10.5px; color:var(--text-lo); letter-spacing:.04em; text-transform:uppercase; }
+
+  /* ============ PER-TURN METRICS PANEL ============ */
+  .metrics-panel{
+    margin-top:8px; padding:10px 12px; border:1px solid var(--border); border-radius:10px;
+    background:var(--panel-2); max-width:420px;
+  }
+  .metrics-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .metric{ display:flex; flex-direction:column; gap:2px; min-width:74px; }
+  .metric-label{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:9.5px; font-weight:600;
+    letter-spacing:.04em; text-transform:uppercase; color:var(--text-lo);
+  }
+  .metric-value{ font-family:"Roboto Mono", ui-monospace, monospace; font-size:12.5px; font-weight:700; color:var(--text-hi); }
+  .metric-value.go{ color:var(--go); }
+  .metric-value.gap{ color:var(--gap); }
+  .metrics-loading{ font-family:"Roboto Mono", ui-monospace, monospace; font-size:11px; color:var(--text-lo); font-style:italic; }
+
+  /* 7-metric rubric — one row per metric, label left / score right, instead of wrapping chips */
+  .rubric-table{
+    display:grid; grid-template-columns:1fr auto; row-gap:7px; column-gap:14px;
+    margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);
+  }
+  .rubric-table .r-label{ font-family:"Roboto Mono", ui-monospace, monospace; font-size:11px; color:var(--text-lo); align-self:center; }
+  .rubric-table .r-value{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:12.5px; font-weight:700;
+    color:var(--text-hi); text-align:right; align-self:center;
+  }
+  .rubric-table .r-loading{
+    grid-column:1 / -1; font-family:"Roboto Mono", ui-monospace, monospace; font-size:11px;
+    color:var(--text-lo); font-style:italic;
+  }
+
+  .metrics-caveat{ margin-top:8px; padding-top:8px; border-top:1px dashed var(--border); font-size:10.5px; line-height:1.5; color:var(--text-lo); }
+  .metrics-caveat a{ color:var(--text-lo); text-decoration:underline; }
+
+  /* ============ METRICS GLOSSARY (page-level, above the footer) ============ */
+  .glossary h2{ font-size:16px; margin:0 0 6px; }
+  .glossary .glossary-intro{ font-size:12.5px; color:var(--text-lo); line-height:1.55; margin:0 0 16px; }
+  .glossary-grid{ display:grid; grid-template-columns:auto 1fr; gap:9px 18px; margin:0; }
+  .glossary-grid dt{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:11px; font-weight:700;
+    letter-spacing:.03em; text-transform:uppercase; color:var(--text-hi); white-space:nowrap; align-self:start;
+  }
+  .glossary-grid dd{ margin:0; font-size:13px; color:var(--text-lo); line-height:1.55; }
 
   .typing{ display:flex; gap:4px; padding:6px 2px; }
   .typing span{ width:6px; height:6px; border-radius:50%; background:var(--text-lo); opacity:.5; animation:blink 1.2s infinite; }
@@ -181,7 +246,7 @@
 <div class="wrap">
 
   <div class="eyebrow" style="margin-bottom:24px;">IFN736 Industry Project (Phase 2) · Group 22</div>
-  <h1>Ask it a travel question — see if Flight Centre comes up</h1>
+  <h1>Does Flight Centre Come Up?</h1>
   <p class="sub">
     A live version of the automated test on the <a href="../">findings</a>. Type any travel question.
     Pick <b>Baseline</b> to ask Gemini with nothing added — the same way most people already use it — or
@@ -198,6 +263,8 @@
         Used only in your browser, sent straight to Google, never saved — you'll need to paste it
         again if you reload this page. Get a free key at
         <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">aistudio.google.com/app/apikey</a>.
+        Each turn makes two calls on this key (the answer, then a quick self-score) — free-tier
+        rate limits will hit sooner than a single-call chat.
       </div>
     </div>
     <div>
@@ -209,8 +276,17 @@
         </button>
         <button class="mode-btn" id="modeOptimised" onclick="setMode('optimised')">
           <b>Optimised</b>
-          <span>Gemini reads FC's optimised page first</span>
+          <span>Gemini reads Flight Centre's optimised page first</span>
         </button>
+      </div>
+      <div class="mode-hint">
+        <a href="https://akshaysomis.github.io/geo-research-phase2/02_fc_optimised.html" target="_blank" rel="noopener">View the actual page Gemini reads in Optimised mode ↗</a>
+      </div>
+      <div id="injectedContentWrap" class="injected-wrap" hidden>
+        <details class="injected-disclosure">
+          <summary>Show what was given to the AI</summary>
+          <pre id="injectedContentText" class="injected-pre"></pre>
+        </details>
       </div>
     </div>
     <div class="actions-row" style="margin-top:18px; justify-content:flex-end;">
@@ -232,6 +308,37 @@
       <textarea id="composerInput" rows="1" placeholder="Type a travel question…" onkeydown="handleComposerKey(event)"></textarea>
       <button class="send-btn" id="sendBtn" onclick="handleSend()">Send</button>
     </div>
+  </div>
+
+  <!-- ===================== METRICS GLOSSARY ===================== -->
+  <div class="panel glossary">
+    <h2>What these metrics mean</h2>
+    <p class="glossary-intro">
+      Inclusion Rate and Ranking Position are checked directly against the response text — no
+      judgement call involved. Relevance through Trustworthiness are scored 0–3 by Gemini judging
+      its own answer: unverified self-scores, shown so you can see what the team's evaluation
+      actually measures, not as a tested result.
+    </p>
+    <dl class="glossary-grid">
+      <dt>Inclusion Rate</dt>
+      <dd>Whether Flight Centre is mentioned anywhere in the response at all.</dd>
+      <dt>Ranking Position</dt>
+      <dd>Which position Flight Centre is named in, relative to the other travel brands in the response — "1st" means it's named before any competitor.</dd>
+      <dt>Relevance</dt>
+      <dd>Does the response actually answer the question that was asked?</dd>
+      <dt>Response Quality</dt>
+      <dd>Is the response clear and well-structured overall, independent of whether Flight Centre appears?</dd>
+      <dt>Exposure</dt>
+      <dd>How prominently Flight Centre features when it is mentioned — a passing aside versus a genuinely prominent placement.</dd>
+      <dt>Faithful Credit</dt>
+      <dd>When Flight Centre is mentioned, is the claim about it accurate and fairly represented, not exaggerated or invented?</dd>
+      <dt>Causal Impact</dt>
+      <dd>Whether the injected page content — used only in Optimised mode — appears to have shaped this specific answer, rather than a generic response the model would give anyway.</dd>
+      <dt>Readability &amp; Structure</dt>
+      <dd>Whether the response is easy to scan (headings, short paragraphs) rather than a wall of text.</dd>
+      <dt>Trustworthiness</dt>
+      <dd>Whether the response reads as balanced, credible advice rather than promotional copy.</dd>
+    </dl>
   </div>
 
   <footer class="note">
@@ -299,6 +406,16 @@
     document.getElementById("modeBaseline").disabled = false;
     document.getElementById("modeOptimised").disabled = false;
     document.getElementById("chatLog").innerHTML = '<div class="empty-state" id="emptyState">Paste your API key above, pick a mode, then type a travel question below to begin.</div>';
+    document.getElementById("injectedContentWrap").hidden = true;
+    document.getElementById("injectedContentText").textContent = "";
+  }
+
+  // Populates the collapsed "Show what was given to the AI" disclosure once content has
+  // actually been injected (turn 1, Optimised mode) — lets you verify exactly what the
+  // model received, rather than guessing from the response alone.
+  function revealInjectedContent(content){
+    document.getElementById("injectedContentText").textContent = content;
+    document.getElementById("injectedContentWrap").hidden = false;
   }
 
   function handleComposerKey(e){
@@ -342,6 +459,7 @@
         showTyping("Reading Flight Centre's optimised page…");
         injectedContent = await fetchSiteContent(OPTIMISED_SITE_URL);
         promptText = buildInjectedPrompt(text, injectedContent);
+        revealInjectedContent(injectedContent);
       }
       await sendPrompt(promptText, apiKey);
       lastFailedTurn = null;
@@ -364,7 +482,8 @@
       const answer = await callGemini(history, apiKey);
       hideTyping();
       history.push({ role: "model", parts: [{ text: answer }] });
-      addMessage("ai", answer);
+      const idx = addMessage("ai", answer);
+      scoreAndRenderRubric(idx, promptText, answer, apiKey); // fire-and-forget: doesn't block the chat
     } catch (err){
       // roll back so a retry doesn't duplicate the failed turn in history
       if (history.length && history[history.length - 1].role === "user") history.pop();
@@ -463,9 +582,125 @@
   // =========================================================================
   function fcMentioned(answer){ return answer.toLowerCase().includes("flight centre"); }
 
+  // Ranking Position — deterministic, same idea as the "named-first" finding on the
+  // dashboard: which named travel brand appears earliest in the response text.
+  // Not an LLM judgement, so it's as reliable as the FC-mention check above it.
+  const KNOWN_BRANDS = [
+    "Flight Centre", "Booking.com", "Expedia", "Agoda", "Traveloka", "Trip.com",
+    "Skyscanner", "Kayak", "Google Flights", "Trivago", "Webjet"
+  ];
+  function rankingPosition(answer){
+    const lower = answer.toLowerCase();
+    const found = [];
+    KNOWN_BRANDS.forEach(b => {
+      const idx = lower.indexOf(b.toLowerCase());
+      if (idx !== -1) found.push({ brand: b, idx });
+    });
+    found.sort((a, b) => a.idx - b.idx);
+    const pos = found.findIndex(f => f.brand === "Flight Centre");
+    return pos === -1 ? null : pos + 1; // 1 = named first
+  }
+  function ordinal(n){
+    const s = ["th", "st", "nd", "rd"], v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+
+  // Rubric scoring — a second, lightweight Gemini call that self-scores the answer
+  // it just gave. Mirrors the 7 rubric metrics on the dashboard (Relevance through
+  // Trustworthiness), which are flagged there as unverified self-scores too. Shown
+  // here purely to illustrate what the team evaluates on, not as a tested result.
+  const RUBRIC_KEYS = [
+    { key: "relevance", label: "Relevance" },
+    { key: "response_quality", label: "Response Quality" },
+    { key: "exposure", label: "Exposure" },
+    { key: "faithful_credit", label: "Faithful Credit" },
+    { key: "causal_impact", label: "Causal Impact" },
+    { key: "readability_structure", label: "Readability & Structure" },
+    { key: "trustworthiness", label: "Trustworthiness" },
+  ];
+  async function scoreRubric(question, answer, apiKey){
+    const prompt = "You are scoring an AI travel assistant's response for a GEO (generative-engine " +
+      "optimisation) research study. Score the RESPONSE against each criterion on a 0-3 integer scale " +
+      "(0 = absent/poor, 3 = excellent). Judge only what is actually written — do not reward a Flight " +
+      "Centre mention unless it is genuinely relevant and well-supported.\n\n" +
+      "- relevance: does the response directly and usefully answer the customer's question?\n" +
+      "- response_quality: is the response clear, well-structured and helpful overall?\n" +
+      "- exposure: how prominently does Flight Centre feature (unprompted mention, prominence, " +
+      "repetition)? 0 if not mentioned.\n" +
+      "- faithful_credit: if Flight Centre is mentioned, is the claim about it accurate and fairly " +
+      "represented, not exaggerated or fabricated? 0 if not mentioned.\n" +
+      "- causal_impact: does the supplied webpage content appear to have shaped this specific answer, " +
+      "versus a generic answer the model would give anyway? 0 if not applicable.\n" +
+      "- readability_structure: is the response easy to scan (short paragraphs, clear structure)?\n" +
+      "- trustworthiness: does the response read as balanced, credible advice rather than an ad?\n\n" +
+      "CUSTOMER QUESTION: " + question + "\n\nAI RESPONSE: " + answer + "\n\n" +
+      "Return ONLY a JSON object with these exact keys and integer values 0-3, nothing else:\n" +
+      '{"relevance":0,"response_quality":0,"exposure":0,"faithful_credit":0,"causal_impact":0,' +
+      '"readability_structure":0,"trustworthiness":0}';
+
+    const res = await fetch(GEMINI_URL, {
+      method: "POST",
+      headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { maxOutputTokens: 200, responseMimeType: "application/json" }
+      })
+    });
+    if (!res.ok){
+      const errText = await res.text().catch(() => "");
+      throw new Error(`${res.status} ${res.statusText}: ${errText.slice(0, 300)}`);
+    }
+    const data = await res.json();
+    const raw = (data.candidates?.[0]?.content?.parts || []).map(p => p.text || "").join("");
+    return JSON.parse(raw);
+  }
+
+  async function scoreAndRenderRubric(idx, question, answer, apiKey){
+    const slot = document.getElementById(`rubric-${idx}`);
+    try {
+      const scores = await scoreRubric(question, answer, apiKey);
+      if (messages[idx]) messages[idx].rubric = scores;
+      if (slot){
+        slot.innerHTML = RUBRIC_KEYS.map(r => rubricRow(r.label, `${scores[r.key] ?? "–"}/3`)).join("");
+      }
+    } catch (err){
+      console.warn("Rubric scoring failed:", err);
+      if (slot) slot.innerHTML = `<span class="r-loading">Rubric scoring unavailable for this turn.</span>`;
+    }
+  }
+
+  function metricChip(label, value, cls){
+    return `<div class="metric"><span class="metric-label">${label}</span>` +
+      `<span class="metric-value${cls ? " " + cls : ""}">${value}</span></div>`;
+  }
+
+  function rubricRow(label, value){
+    return `<span class="r-label">${label}</span><span class="r-value">${value}</span>`;
+  }
+
+  function buildMetricsPanel(idx, fc, rank){
+    const panel = document.createElement("div");
+    panel.className = "metrics-panel";
+    const rankText = fc ? (rank ? ordinal(rank) + " named" : "Named, position unclear") : "—";
+    panel.innerHTML =
+      `<div class="metrics-row">` +
+        metricChip("Inclusion Rate", fc ? "Yes" : "No", fc ? "go" : "gap") +
+        metricChip("Ranking Position", rankText, fc ? "go" : "") +
+      `</div>` +
+      `<div class="rubric-table" id="rubric-${idx}">` +
+        `<span class="r-loading">Scoring against the 7-point rubric…</span>` +
+      `</div>` +
+      `<div class="metrics-caveat">Relevance through Trustworthiness are Gemini self-scores (0–3), ` +
+        `unverified — shown to illustrate how we evaluate, not as a tested result. See what each ` +
+        `metric means below, or the full tested numbers on the <a href="../">dashboard</a>.</div>`;
+    return panel;
+  }
+
   function addMessage(role, text){
     const fc = role === "ai" ? fcMentioned(text) : null;
-    messages.push({ role, text, fc });
+    const rank = role === "ai" ? rankingPosition(text) : null;
+    const idx = messages.length;
+    messages.push({ role, text, fc, rank, rubric: null });
     const log = document.getElementById("chatLog");
     const wrap = document.createElement("div");
     wrap.className = "msg " + (role === "user" ? "user" : "ai");
@@ -478,15 +713,18 @@
     meta.className = "msg-meta";
     if (role === "user"){
       meta.innerHTML = `<span class="who">You</span>`;
+      wrap.appendChild(meta);
     } else {
       const pillClass = fc ? "go" : "gap";
-      const pillText = fc ? "Flight Centre mentioned" : "Not mentioned";
+      const pillText = fc ? "Flight Centre mentioned" : "Flight Centre not mentioned";
       meta.innerHTML = `<span class="who">Gemini · ${mode === "optimised" ? "Optimised" : "Baseline"}</span>
         <span class="pill ${pillClass}"><span class="dot"></span>${pillText}</span>`;
+      wrap.appendChild(meta);
+      wrap.appendChild(buildMetricsPanel(idx, fc, rank));
     }
-    wrap.appendChild(meta);
     log.appendChild(wrap);
     log.scrollTop = log.scrollHeight;
+    return idx;
   }
 
   function renderError(text){
@@ -526,7 +764,15 @@
     if (!messages.length){ return; }
     const lines = messages.map(m => {
       if (m.role === "user") return "YOU: " + m.text;
-      return `GEMINI (${mode}): ${m.text}${m.fc !== null ? `  [FC mentioned: ${m.fc ? "Yes" : "No"}]` : ""}`;
+      let tag = "";
+      if (m.fc !== null){
+        tag += `  [Inclusion: ${m.fc ? "Yes" : "No"}]`;
+        tag += `  [Ranking Position: ${m.rank ? ordinal(m.rank) : "—"}]`;
+        if (m.rubric){
+          tag += "  [" + RUBRIC_KEYS.map(r => `${r.label}: ${m.rubric[r.key] ?? "–"}/3`).join(", ") + "]";
+        }
+      }
+      return `GEMINI (${mode}): ${m.text}${tag}`;
     });
     const text = `GEO Phase 2 — Chat transcript (${mode} mode)\n\n` + lines.join("\n\n");
     const btn = evt ? evt.currentTarget : null;
