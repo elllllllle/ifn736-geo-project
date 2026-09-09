@@ -275,7 +275,31 @@
   }
 
   .topbar{ background:var(--panel); border-bottom:1px solid var(--border); }
-  .topbar-inner{ max-width:1180px; margin:0 auto; padding:14px 20px; display:flex; justify-content:center; gap:8px; }
+    .topbar-inner{ max-width:1180px; margin:0 auto; padding:14px 20px; display:flex; justify-content:center; gap:8px; }
+
+    /* ============ PAGE ANCHOR (right-side section nav) ============ */
+  /* .page-shell puts .wrap and .page-anchor side by side as flex items, so the anchor
+     reserves real layout space instead of floating over the content (which is what
+     caused the overlap) — it only ever shows once there's actually room for both:
+     wrap's box is a fixed 1180px (border-box, so padding's included) + 28px gap +
+     164px anchor = 1372px minimum, so the 1440px breakpoint below always clears that
+     with room to spare. */
+      .page-shell{ display:flex; justify-content:center; align-items:flex-start; gap:0; }
+  .page-anchor{ width:172px; flex:0 0 172px; margin-right:36px; position:sticky; top:120px; display:none; }
+  @media (min-width:1440px){ .page-anchor{ display:block; } }
+  .page-anchor .anchor-title{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:10.5px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--text-lo); margin-bottom:8px;
+  }
+  .page-anchor ul{ list-style:none; margin:0; padding:0; border-left:2px solid var(--border); }
+  .page-anchor li{ margin:0; }
+  .page-anchor a{
+    display:block; padding:6px 0 6px 14px; margin-left:-2px; border-left:2px solid transparent;
+    font-size:12.5px; color:var(--text-lo); text-decoration:none; line-height:1.35;
+  }
+  .page-anchor a:hover{ color:var(--text-hi); }
+  .page-anchor a.active{ color:var(--accent); border-left-color:var(--accent); font-weight:600; }
+
   .site-nav-link{
     font-family:"Roboto Mono", ui-monospace, monospace; font-size:12px; font-weight:600;
     letter-spacing:.04em; text-decoration:none; color:var(--text-lo);
@@ -294,6 +318,7 @@
   </div>
 </nav>
 
+<div class="page-shell">
 <div class="wrap">
 
   <header class="masthead">
@@ -318,9 +343,9 @@
   </div>
 
   <!-- ===================== HEADLINE BOARD ===================== -->
-  <section>
+  <section id="sec-headline">
     <div class="section-head">
-      <h2>Three methods, one question</h2>
+      <h2>Headline results</h2>
       <span class="hint">FC mention rate — % of turns where Flight&nbsp;Centre is named organically</span>
     </div>
     <div class="board" id="board"></div>
@@ -334,7 +359,11 @@
   </section>
 
   <!-- ===================== STAGE + COMPETITORS ===================== -->
-  <section>
+  <section id="sec-journey">
+    <div class="section-head">
+      <h2>Journey stage &amp; competitors</h2>
+      <span class="hint">Where FC shows up in the journey, and who gets named instead</span>
+    </div>
     <div class="grid2">
       <div class="card">
         <h3>Where in the journey does FC show up?</h3>
@@ -354,9 +383,9 @@
   </section>
 
   <!-- ===================== SITE LEADERBOARD ===================== -->
-  <section>
+  <section id="sec-leaderboard">
     <div class="section-head">
-      <h2>V3 site-variant leaderboard</h2>
+      <h2>Which page structure wins</h2>
       <span class="hint">Excl. Book turn · 9 mockup variants × 19 conversations ·
         <a href="https://akshaysomis.github.io/geo-research-phase2/" target="_blank" rel="noopener">browse all 9 pages ↗</a>
       </span>
@@ -375,8 +404,8 @@
   </section>
 
   <!-- ===================== SYNTHESIS ===================== -->
-  <section>
-    <div class="section-head"><h2>What it adds up to</h2></div>
+  <section id="sec-synthesis">
+    <div class="section-head"><h2>Key takeaways</h2></div>
     <div class="synth-grid">
       <div class="synth-card">
         <h4>Recall and search stay narrow — injection reaches everyone</h4>
@@ -394,20 +423,20 @@
   </section>
 
   <!-- ===================== RECOMMENDATIONS ===================== -->
-  <section>
+  <section id="sec-recommendations">
     <div class="section-head"><h2>Recommendations</h2></div>
     <div class="reco-list" id="recoList"></div>
   </section>
 
   <!-- ===================== LIMITATIONS ===================== -->
-  <section>
-    <div class="section-head"><h2>Read this with</h2></div>
+  <section id="sec-limitations">
+    <div class="section-head"><h2>Limitations & caveats</h2></div>
     <div class="limit-panel">
       <ul id="limitList"></ul>
     </div>
   </section>
 
-  <footer>
+  <footer id="sec-sources">
     <div class="eyebrow" style="margin-bottom:10px;">Source files</div>
     <div style="overflow-x:auto;">
       <table class="filetable">
@@ -417,6 +446,20 @@
     </div>
     <p class="foot-note">All rubric scores (Relevance, Response Quality, Exposure, Faithful Credit, Causal Impact, Readability &amp; Structure, Trustworthiness) are unverified Gemini self-scores — a first-pass signal, not final numbers, until human spot-checked. <code>FC Mentioned</code> is a deterministic string match and is reliable as-is. Full detail in <code>GEO_Three_Version_Findings.docx</code>.</p>
   </footer>
+
+</div>
+
+<nav class="page-anchor" id="pageAnchor" aria-label="Section navigation">
+  <div class="anchor-title">On this page</div>
+  <ul>
+    <li><a href="#sec-headline" data-target="sec-headline">Headline results</a></li>
+    <li><a href="#sec-journey" data-target="sec-journey">Journey stage &amp; competitors</a></li>
+    <li><a href="#sec-leaderboard" data-target="sec-leaderboard">Which page structure wins</a></li>
+    <li><a href="#sec-synthesis" data-target="sec-synthesis">Key takeaways</a></li>
+    <li><a href="#sec-recommendations" data-target="sec-recommendations">Recommendations</a></li>
+    <li><a href="#sec-limitations" data-target="sec-limitations">Limitations & caveats</a></li>
+  </ul>
+</nav>
 
 </div>
 
@@ -571,6 +614,33 @@
     var tr = document.createElement('tr');
     tr.innerHTML = '<td>'+f[0]+'</td><td class="file">'+f[1]+'</td><td class="num">'+f[2]+'</td>';
     fileTable.appendChild(tr);
+  });
+
+    // ---------- PAGE ANCHOR (right-side section nav) ----------
+  var anchorLinks = Array.prototype.slice.call(document.querySelectorAll('.page-anchor a'));
+  var anchorSections = anchorLinks
+    .map(function(a){ return document.getElementById(a.dataset.target); })
+    .filter(Boolean);
+
+  function setActiveAnchor(id){
+    anchorLinks.forEach(function(a){ a.classList.toggle('active', a.dataset.target === id); });
+  }
+
+  if ('IntersectionObserver' in window && anchorSections.length){
+    var anchorObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting) setActiveAnchor(entry.target.id);
+      });
+    }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+    anchorSections.forEach(function(s){ anchorObserver.observe(s); });
+  }
+
+  anchorLinks.forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var target = document.getElementById(a.dataset.target);
+      if (target) target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+    });
   });
 
   // ---------- ANIMATE IN ----------
