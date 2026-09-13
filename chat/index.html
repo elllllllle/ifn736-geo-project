@@ -502,7 +502,12 @@
       .finally(() => setSending(false));
   }
 
-  function describeError(err){
+    function describeError(err){
+    // USER STORY 213 / INP-108: an aborted (timed-out) request now gets a specific
+    // message instead of falling through to the generic one at the bottom.
+    if (err && err.name === "AbortError"){
+      return "This is taking longer than expected — Gemini didn't respond in time. Try again.";
+    }
     const msg = (err && err.message) || String(err);
     if (msg.includes("Failed to fetch") || msg.includes("NetworkError")){
       return "Couldn't reach the network — check your connection and try again.";
@@ -511,6 +516,11 @@
       return "Gemini rejected that API key — double-check it's correct and try again.";
     }
     if (msg.includes("429")){
+      // USER STORY 213 / INP-108: tells apart "rate limited" from "quota fully
+      // exhausted" — both surface as HTTP 429, but only one is worth waiting out.
+      if (msg.toLowerCase().includes("quota")){
+        return "This API key has used up its available quota. Waiting a moment won't help — try a different key, or wait for it to reset (often 24 hours on the free tier).";
+      }
       return "Rate limit hit on this key — wait a moment and try again.";
     }
     return "Something went wrong: " + msg;
@@ -519,12 +529,23 @@
   // =========================================================================
   // Gemini call — same REST shape as the Python scripts
   // =========================================================================
-  async function callGemini(historyArr, apiKey){
-    const res = await fetch(GEMINI_URL, {
-      method: "POST",
-      headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: historyArr, generationConfig: { maxOutputTokens: 500 } })
-    });
+    async function callGemini(historyArr, apiKey, timeoutMs = 20000){
+    // USER STORY 213 / INP-107: explicit timeout, same AbortController pattern
+    // fetchSiteContent() already uses below. Without this, a hung Gemini call had
+    // no controlled timeout at all — it just sat on "Thinking…" indefinitely.
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+    let res;
+    try {
+      res = await fetch(GEMINI_URL, {
+        method: "POST",
+        headers: { "x-goog-api-key": apiKey, "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: historyArr, generationConfig: { maxOutputTokens: 500 } }),
+        signal: controller.signal
+      });
+    } finally {
+      clearTimeout(timer);
+    }
     if (!res.ok){
       const errText = await res.text().catch(() => "");
       throw new Error(`${res.status} ${res.statusText}: ${errText.slice(0, 300)}`);
