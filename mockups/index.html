@@ -9,18 +9,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;600;700&display=swap">
 <style>
   :root{
-    --bg:#F4F6F9;
-    --panel:#FFFFFF;
-    --panel-2:#ECF0F5;
-    --border:#D8DEE7;
-    --text-hi:#161A22;
-    --text-lo:#57647A;
-    --accent:#A6690A;
-    --accent-soft:#F3E3C6;
-    --go:#1F8F6C;
-    --go-soft:#DCF1E9;
-    --slate:#6B7A94;
-    --slate-soft:#E4E9F0;
+    --bg:#F4F6F9; --panel:#FFFFFF; --panel-2:#ECF0F5; --border:#D8DEE7;
+    --text-hi:#161A22; --text-lo:#57647A;
+    --accent:#A6690A; --accent-soft:#F3E3C6;
+    --go:#1F8F6C; --go-soft:#DCF1E9;
+    --gap:#C23B2E; --gap-soft:#F7E1DE;
+    --slate:#6B7A94; --slate-soft:#E4E9F0;
+    --user-bubble:#1B2029; --user-bubble-text:#F4F6F9;
     --shadow: 0 1px 2px rgba(22,26,34,.04), 0 8px 24px -12px rgba(22,26,34,.12);
   }
   @media (prefers-color-scheme: dark){
@@ -42,26 +37,23 @@
   }
   *{ box-sizing:border-box; }
   body{
-    margin:0;
-    background:var(--bg);
-    color:var(--text-hi);
+    margin:0; background:var(--bg); color:var(--text-hi);
     font-family:"Roboto", ui-sans-serif, system-ui, sans-serif;
-    padding:0 0 80px;
+    -webkit-font-smoothing:antialiased;
   }
-  .wrap{ max-width:960px; margin:0 auto; padding:48px 20px 0; }
-  h1{
-    font-family:"Roboto", sans-serif;
-    font-size:32px;
-    font-weight:700;
-    margin:0 0 8px;
-  }
-  .lede{
+  .wrap{ max-width:1180px; margin:0 auto; padding:28px 20px 60px; }
+
+  .eyebrow{
+    font-family:"Roboto Mono", ui-monospace, monospace;
+    font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
     color:var(--text-lo);
-    font-size:14px;
-    line-height:1.6;
-    max-width:680px;
-    margin:0 0 24px;
   }
+
+  h1{
+  font-weight:900; font-size:clamp(24px,3.4vw,46px); line-height:1.02;
+  letter-spacing:.01em; margin:6px 0 8px; text-wrap:balance;
+  }
+  .lede{ color:var(--text-lo); font-size:14.5px; line-height:1.55; margin:0 0 22px; }
   .note{
     background:var(--panel-2);
     border:1px solid var(--border);
@@ -73,6 +65,18 @@
     margin-bottom:40px;
   }
   .note b{ color:var(--text-hi); }
+
+  /* ============ PROVENANCE BANNER ============ */
+  .banner{
+    display:flex; gap:14px; align-items:flex-start;
+    background:var(--panel); border:1px solid var(--border); border-left:4px solid var(--accent);
+    border-radius:10px; padding:16px 18px; margin-bottom:32px; box-shadow:var(--shadow);
+  }
+  .banner .icon{ font-family:"Roboto Mono",monospace; font-weight:700; color:var(--accent); font-size:13px; padding-top:1px;}
+  .banner p{ margin:0; font-size:14px; line-height:1.55; color:var(--text-hi); }
+  .banner p + p{ margin-top:6px; color:var(--text-lo); font-size:13.5px; }
+  .banner b{ color:var(--accent); }
+
   .group{ margin-bottom:40px; }
   .group-head{ margin-bottom:16px; }
   .group-title{
@@ -173,11 +177,15 @@
 </nav>
 
 <div class="wrap">
+  <div class="eyebrow" style="margin-bottom:24px;">IFN736 Industry Project (Phase 2) · Group 22</div>
   <h1>GEO Mockup Sites — Flight Centre Variants</h1>
   <p class="lede">Nine Flight Centre landing-page mockups, each testing a different content structure — schema markup, FAQ sections, tables, statistics, citations — to see which changes affect how AI assistants read and reference the page. Built for the IFN736 GEO Phase 2 project.</p>
 
-  <div class="note">
-    <b>These are research mockups, not live Flight Centre pages.</b> Product names and prices are synthetic test data, not the real ProCat catalogue.
+  <div class="banner">
+    <div class="icon">i</div>
+    <div>
+      <p><b>These are research mockups, not live Flight Centre pages.</b> Product names and prices are synthetic test data, not the real ProCat catalogue.</p>
+    </div>
   </div>
 
   <div class="group" id="ladder-group">
