@@ -240,6 +240,7 @@
   <div class="topbar-inner">
     <a href="../" class="site-nav-link">Findings</a>
     <a href="./" class="site-nav-link active">Chat Demo</a>
+    <a href="../mockups/" class="site-nav-link">Mockup Sites</a>
   </div>
 </nav>
 
@@ -280,7 +281,7 @@
         </button>
       </div>
       <div class="mode-hint">
-        <a href="https://akshaysomis.github.io/geo-research-phase2/02_fc_optimised.html" target="_blank" rel="noopener">View the actual page Gemini reads in Optimised mode ↗</a>
+        <a href="../mockups/04_site_b_full.html" target="_blank" rel="noopener">View the actual page Gemini reads in Optimised mode ↗</a>
       </div>
       <div id="injectedContentWrap" class="injected-wrap" hidden>
         <details class="injected-disclosure">
@@ -356,7 +357,7 @@
   // =========================================================================
   const GEMINI_MODEL = "gemini-3.5-flash-lite";
   const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
-  const OPTIMISED_SITE_URL = "https://akshaysomis.github.io/geo-research-phase2/02_fc_optimised.html";
+  const OPTIMISED_SITE_URL = "../mockups/04_site_b_full.html";
 
   // Snapshot of what fetch_content() in multi_turn_query19_injection_test.py actually
   // extracts from 02_fc_optimised.html: JSON-LD schema *type* labels (not the answer

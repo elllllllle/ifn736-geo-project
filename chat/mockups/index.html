@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEO Mockup Sites — Flight Centre Variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#F4F6F9;
+    --panel:#FFFFFF;
+    --panel-2:#ECF0F5;
+    --border:#D8DEE7;
+    --text-hi:#161A22;
+    --text-lo:#57647A;
+    --accent:#A6690A;
+    --accent-soft:#F3E3C6;
+    --go:#1F8F6C;
+    --go-soft:#DCF1E9;
+    --slate:#6B7A94;
+    --slate-soft:#E4E9F0;
+    --shadow: 0 1px 2px rgba(22,26,34,.04), 0 8px 24px -12px rgba(22,26,34,.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12151C;
+      --panel:#1B2029;
+      --panel-2:#232936;
+      --border:#2E3644;
+      --text-hi:#ECF0F6;
+      --text-lo:#96A2B8;
+      --accent:#F0A93E;
+      --accent-soft:#3A2E13;
+      --go:#4FD8A6;
+      --go-soft:#123528;
+      --slate:#8B98B0;
+      --slate-soft:#242B38;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+    }
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text-hi);
+    font-family:"Roboto", ui-sans-serif, system-ui, sans-serif;
+    padding:0 0 80px;
+  }
+  .wrap{ max-width:960px; margin:0 auto; padding:48px 20px 0; }
+  h1{
+    font-family:"Roboto", sans-serif;
+    font-size:32px;
+    font-weight:700;
+    margin:0 0 8px;
+  }
+  .lede{
+    color:var(--text-lo);
+    font-size:14px;
+    line-height:1.6;
+    max-width:680px;
+    margin:0 0 24px;
+  }
+  .note{
+    background:var(--panel-2);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:14px 16px;
+    font-size:12.5px;
+    color:var(--text-lo);
+    line-height:1.6;
+    margin-bottom:40px;
+  }
+  .note b{ color:var(--text-hi); }
+  .group{ margin-bottom:40px; }
+  .group-head{ margin-bottom:16px; }
+  .group-title{
+    font-family:"Roboto", sans-serif;
+    font-size:19px;
+    font-weight:700;
+    color:var(--text-hi);
+    margin:0 0 4px;
+  }
+  .group-desc{
+    font-size:12.5px;
+    color:var(--text-lo);
+    line-height:1.6;
+    max-width:640px;
+    margin:0;
+  }
+  .grid{
+    display:grid;
+    gap:10px;
+  }
+  .card{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:16px;
+    box-shadow:var(--shadow);
+    text-decoration:none;
+    color:inherit;
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .card:hover{ border-color:var(--accent); transform:translateY(-1px); }
+  .badge{
+    flex:0 0 auto;
+    min-width:30px;
+    height:30px;
+    padding:0 8px;
+    border-radius:8px;
+    background:var(--slate-soft);
+    color:var(--text-lo);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:11px;
+    font-weight:700;
+    margin-top:2px;
+  }
+  .card.baseline .badge{ background:var(--go-soft); color:var(--go); }
+  .info{ flex:1 1 auto; min-width:0; }
+  .name{
+    font-family:"Roboto", sans-serif;
+    font-size:16px;
+    font-weight:600;
+    color:var(--text-hi);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .go-arrow{ color:var(--text-lo); font-size:14px; }
+  .card:hover .go-arrow{ color:var(--accent); }
+  .desc{
+    font-size:12.5px;
+    color:var(--text-lo);
+    line-height:1.55;
+    margin-top:4px;
+  }
+  footer{
+    border-top:1px solid var(--border);
+    padding-top:20px;
+    font-size:11.5px;
+    color:var(--text-lo);
+    line-height:1.6;
+  }
+  footer a{ color:var(--accent); text-decoration:none; }
+  footer a:hover{ text-decoration:underline; }
+
+  .topbar{ background:var(--panel); border-bottom:1px solid var(--border); }
+  .topbar-inner{ max-width:960px; margin:0 auto; padding:14px 20px; display:flex; justify-content:center; gap:8px; }
+  .site-nav-link{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:12px; font-weight:600;
+    letter-spacing:.04em; text-decoration:none; color:var(--text-lo);
+    padding:8px 16px; border-radius:6px; border:1px solid transparent;
+  }
+  .site-nav-link.active{ color:var(--text-hi); background:var(--panel-2); border-color:var(--border); }
+  .site-nav-link:hover:not(.active){ color:var(--text-hi); }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-inner">
+    <a href="../" class="site-nav-link">Findings</a>
+    <a href="../chat/" class="site-nav-link">Chat Demo</a>
+    <a href="./" class="site-nav-link active">Mockup Sites</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <h1>GEO Mockup Sites — Flight Centre Variants</h1>
+  <p class="lede">Nine Flight Centre landing-page mockups, each testing a different content structure — schema markup, FAQ sections, tables, statistics, citations — to see which changes affect how AI assistants read and reference the page. Built for the IFN736 GEO Phase 2 project.</p>
+
+  <div class="note">
+    <b>These are research mockups, not live Flight Centre pages.</b> Product names and prices are synthetic test data, not the real ProCat catalogue.
+  </div>
+
+  <div class="group" id="ladder-group">
+    <div class="group-head">
+      <h2 class="group-title">Incremental Comparison Ladder</h2>
+      <p class="group-desc">Each page builds on the one before it, adding one more layer of optimisation at a time.</p>
+    </div>
+    <div class="grid" id="ladderGrid"></div>
+  </div>
+
+  <div class="group" id="isolated-group">
+    <div class="group-head">
+      <h2 class="group-title">Isolated Technique Variants</h2>
+      <p class="group-desc">Each page branches directly from Site A, changing exactly one thing — so each technique's effect can be measured on its own.</p>
+    </div>
+    <div class="grid" id="isolatedGrid"></div>
+  </div>
+
+  <footer>
+    See the <a href="../">Findings dashboard</a> for how these variants performed, or try the <a href="../chat/">live chat demo</a> to see this content in action.
+  </footer>
+</div>
+
+<script>
+  var ladder = [
+    { badge:'A', baseline:true, name:'Site A — Baseline', desc:'No optimisation. Control for the whole ladder.', file:'01_site_a_baseline.html' },
+    { badge:'V1', name:'Variant 1 — Schema only', desc:'Same visible content as Site A, TravelAgency + Product + AggregateRating + ItemList schema added.', file:'02_v1_schema_only.html' },
+    { badge:'V2', name:'Variant 2 — Schema + FAQ', desc:'Adds FAQPage schema and a visible FAQ section on top of Variant 1.', file:'03_v2_schema_faq.html' },
+    { badge:'B', name:'Site B — Full composite', desc:'Adds answer-first cards, ratings, tags, and stats bar on top of Variant 2.', file:'04_site_b_full.html' },
+    { badge:'V4', name:'Variant 4 — Full + Tables', desc:'Adds HowTo schema and structured cancellation/accommodation/booking tables.', file:'05_v4_full_tables.html' }
+  ];
+
+  var isolated = [
+    { badge:'P2', name:'P2 — FAQ only', desc:'Same visible content as Site A, one FAQ section added. No schema markup.', file:'06_p2_faq_only.html' },
+    { badge:'P3', name:'P3 — Statistics only', desc:'Same visible content as Site A, one stats bar added. No schema markup.', file:'07_p3_stats_only.html' },
+    { badge:'P4', name:'P4 — Tables only', desc:'Same visible content as Site A, 3 policy/booking tables added. No schema markup.', file:'08_p4_tables_only.html' },
+    { badge:'P5', name:'P5 — Citations/quotations only', desc:'Same visible content as Site A, one attributed-quotes section added. No schema markup.', file:'09_p5_citations_only.html' }
+  ];
+
+  function renderGroup(items, gridId){
+    var grid = document.getElementById(gridId);
+    items.forEach(function(s){
+      var a = document.createElement('a');
+      a.href = s.file;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'card' + (s.baseline ? ' baseline' : '');
+      a.innerHTML =
+        '<div class="badge">'+s.badge+'</div>'+
+        '<div class="info">'+
+          '<div class="name">'+s.name+' <span class="go-arrow">↗</span></div>'+
+          '<div class="desc">'+s.desc+'</div>'+
+        '</div>';
+      grid.appendChild(a);
+    });
+  }
+
+  renderGroup(ladder, 'ladderGrid');
+  renderGroup(isolated, 'isolatedGrid');
+</script>
+</body>
+</html>
