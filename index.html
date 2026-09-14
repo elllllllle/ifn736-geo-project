@@ -88,7 +88,7 @@
   .masthead h1{
     font-family:"Roboto", ui-sans-serif, sans-serif;
     font-weight:900; font-size:clamp(24px,3.4vw,46px); line-height:1.02;
-    letter-spacing:.01em; margin-top:6px; white-space:nowrap;
+    letter-spacing:.01em; margin:6px 0 8px; text-wrap:balance;
   }
   .masthead-row{
     display:flex; flex-wrap:wrap; gap:20px 40px; align-items:flex-start;
@@ -311,7 +311,7 @@
 
 <nav class="topbar">
   <div class="topbar-inner">
-    <a href="./" class="site-nav-link active">Dashboard</a>
+    <a href="./" class="site-nav-link active">Findings</a>
     <a href="./chat/" class="site-nav-link">Chat Demo</a>
     <a href="./mockups/" class="site-nav-link">Mockup Sites</a>
   </div>
@@ -321,7 +321,7 @@
 <div class="wrap">
 
   <header class="masthead">
-    <div class="eyebrow">IFN736 Industry Project (Phase 2) · Group 22</div>
+    <div class="eyebrow" style="margin-bottom:24px;">IFN736 Industry Project (Phase 2) · Group 22</div>
     <h1>Is&nbsp;Flight&nbsp;Centre&nbsp;on&nbsp;the&nbsp;board?</h1>
     <div class="masthead-row">
       <p class="sub">This dashboard compares three ways of testing whether AI recommends Flight Centre — recalling from memory, searching the live web, and reading Flight Centre's own page content — across 19 real travel conversations on Gemini. Explore how often Flight Centre gets mentioned under each method, and which of the 9 page-structure variants performs best.</p>
