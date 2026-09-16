@@ -69,7 +69,7 @@
     font-family:"Roboto", ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing:antialiased;
   }
-  .wrap{ max-width:1180px; margin:0 auto; padding:28px 20px 80px; }
+  .wrap{ max-width:1180px; min-width:0; margin:0 auto; padding:28px 20px 80px; }
 
   .eyebrow{
     font-family:"Roboto Mono", ui-monospace, monospace;
@@ -203,46 +203,80 @@
   .hbar-fill.fc{ background:var(--accent); }
   .hbar-val{ font-family:"Roboto Mono",monospace; font-size:12px; text-align:right; color:var(--text-lo); }
 
-  /* site leaderboard */
-  .leaderboard{ display:flex; flex-direction:column; gap:2px; }
-  .lb-row{
-    display:grid; grid-template-columns:30px 1.5fr 0.85fr 52px 56px 62px; gap:10px; align-items:center;
-    padding:11px 12px; border-radius:8px;
-  }
-  .lb-row.head{ font-family:"Roboto Mono",monospace; font-size:10.5px; color:var(--text-lo); text-transform:uppercase; letter-spacing:.06em; padding-bottom:8px; }
-  .lb-row:not(.head):hover{ background:var(--panel-2); }
-  .lb-row.top{ background:var(--panel); }
-  .lb-row.baseline-ref{ background:transparent; border:1px dashed var(--border); }
-  .lb-rank{ font-family:"Roboto Mono",monospace; font-weight:700; font-size:13px; color:var(--text-lo); }
-  .lb-row.top .lb-rank{ color:var(--accent); }
-  .lb-name{ font-size:13.5px; font-weight:600; }
-  .lb-name small{ display:block; font-weight:400; color:var(--text-lo); font-size:11.5px; margin-top:1px; }
-  .lb-view{ font-size:11px; font-weight:400; color:var(--text-lo); text-decoration:none; }
-  .lb-view:hover{ color:var(--accent); }
-  .lb-track{ background:var(--panel-2); border-radius:5px; height:10px; overflow:hidden; }
-  .lb-fill{ height:100%; border-radius:5px; background:var(--slate); width:0; transition:width 1s cubic-bezier(.2,.8,.2,1); }
-  .lb-row.top .lb-fill{ background:var(--accent); }
-  .lb-rate{ font-family:"Roboto Mono",monospace; font-size:12.5px; text-align:right; }
-  .lb-delta{ font-family:"Roboto Mono",monospace; font-size:11.5px; text-align:right; }
-  .lb-delta.pos{ color:var(--go); } .lb-delta.neg{ color:var(--gap); } .lb-delta.zero{ color:var(--text-lo); }
-  .lb-sig{ font-family:"Roboto Mono",monospace; font-size:11px; text-align:right; color:var(--text-lo); }
-  .lb-sig.close{ color:var(--accent); font-weight:600; }
   .sig-note{
     display:flex; gap:12px; align-items:flex-start; background:var(--accent-soft); border-radius:8px;
     padding:12px 14px; margin-bottom:14px; font-size:12.5px; line-height:1.55; color:var(--text-hi);
   }
   .sig-note b{ color:var(--accent); }
 
-  /* run tracker */
-  .run-tracker{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin-bottom:16px; }
-  .run-card{ background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:12px 14px; }
-  .run-card.done{ border-color:color-mix(in srgb, var(--go) 40%, transparent); background:var(--go-soft); }
-  .run-card.pending{ border-style:dashed; }
-  .run-card .run-label{ font-family:"Roboto Mono",monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-lo); }
-  .run-card .run-who{ font-weight:700; font-size:14.5px; margin-top:4px; color:var(--text-hi); }
-  .run-card.pending .run-who{ color:var(--text-lo); }
-  .run-card .run-status{ font-size:11.5px; margin-top:3px; color:var(--text-lo); }
-  .run-card.done .run-status{ color:var(--go); font-weight:600; }
+  /* comparison table — per-run results side by side, consistency-first.
+     .cmp-table is ONE real grid; every .cmp-row is display:contents so its cells become
+     direct grid items sharing the same column tracks — this is what keeps column widths
+     identical across every row (previously each row was its own independent grid, so a
+     row with longer cell text — e.g. the reference row's "ref · 38% incl. Book" — could
+     stretch its own columns wider than the rows below it). display:contents still keeps
+     .cmp-row in the DOM for selector purposes (.cmp-row.winner > * etc. below), it just
+     stops it from generating its own box. */
+  .cmp-table-wrap{ overflow-x:auto; }
+  .cmp-table{
+    display:grid;
+    /* percentage tracks wrapped in minmax(0, …) so a column's width is always that exact
+       share of the table — content can no longer force one column wider than another
+       (which is also what was making row heights uneven: a wider column let its text sit
+       on fewer lines than the same text squeezed into a same-column-but-different-row). */
+    grid-template-columns: minmax(0,23%) minmax(0,16%) minmax(0,16%) minmax(0,16%) minmax(0,13%) minmax(0,16%);
+    row-gap:2px; column-gap:0; align-items:stretch; min-width:800px;
+  }
+  .cmp-row{ display:contents; }
+  .cmp-row.head > div{
+    font-family:"Roboto Mono",monospace; font-size:10.5px; color:var(--text-lo); text-transform:uppercase;
+    letter-spacing:.05em; padding:0 10px 8px; border-bottom:1px solid var(--border); text-align:center; display:flex; flex-direction:column; justify-content:center;
+  }
+  .cmp-row.head > div.sortable{ cursor:pointer; user-select:none; }
+  .cmp-row.head > div.sortable:hover{ color:var(--text-hi); }
+  .cmp-row.head > div.sortable:hover .sort-arrow{ opacity:.9; }
+  .cmp-row.head > div.sortable.active{ color:var(--accent); }
+  .sort-arrow{ display:inline-block; margin-left:4px; opacity:.4; font-size:16px; }
+  .sort-arrow.active{ opacity:1; }
+  /* Fixed row height: every data-row cell gets the same min-height and centers its own
+     content, so rows no longer vary in height depending on whether their text happened
+     to wrap onto one line or two. */
+  /* Scoped to :not(.head) — the header row's Consistency cell also carries the
+     .cmp-consistency class (for its right-alignment), so an unscoped rule here would
+     stretch the header row to match the 76px data-row height too. */
+  .cmp-row:not(.head) > .cmp-name, .cmp-row:not(.head) > .cmp-cell, .cmp-row:not(.head) > .cmp-consistency{
+    padding:12px 10px; min-height:76px; box-sizing:border-box;
+    display:flex; flex-direction:column; justify-content:center;
+  }
+  .cmp-row:not(.head):hover > *{ background:var(--panel-2); }
+  .cmp-row.winner > *{ background:var(--go-soft); }
+  .cmp-row.winner:hover > *{ background:var(--go-soft); }
+  .cmp-row.ref-row > *{ background:transparent; border-top:1px dashed var(--border); border-bottom:1px dashed var(--border); }
+  .cmp-row.ref-row > *:first-child{ border-left:1px dashed var(--border); }
+  .cmp-row.ref-row > *:last-child{ border-right:1px dashed var(--border); }
+  .cmp-row:not(.head) > *:first-child{ border-top-left-radius:8px; border-bottom-left-radius:8px; }
+  .cmp-row:not(.head) > *:last-child{ border-top-right-radius:8px; border-bottom-right-radius:8px; }
+  .cmp-name{ font-size:13.5px; font-weight:600; text-align:center; }
+  .cmp-name small{ display:block; font-weight:400; color:var(--text-lo); font-size:11.5px; margin-top:1px; }
+  .cmp-view{ font-size:11px; font-weight:400; color:var(--text-lo); text-decoration:none; }
+  .cmp-view:hover{ color:var(--accent); }
+  .cmp-cell{ text-align:center; font-family:"Roboto Mono",monospace; align-items:center; }
+  .cmp-cell .cmp-rate{ font-size:14px; font-weight:700; color:var(--text-hi); }
+  .cmp-cell.top2 .cmp-rate{ color:var(--go); }
+  .cmp-cell .cmp-sub{ font-size:10.5px; color:var(--text-lo); margin-top:2px; }
+  .cmp-cell.pending{ color:var(--text-lo); font-style:italic; font-size:11.5px; }
+  .cmp-consistency{ text-align:right; flex-direction:row; align-items:center; justify-content:flex-end; }
+  .cmp-pill{
+    display:inline-flex; align-items:center; gap:5px; font-family:"Roboto Mono",monospace;
+    font-size:10.5px; font-weight:700; letter-spacing:.03em; padding:4px 9px; border-radius:100px;
+    white-space:nowrap;
+  }
+  .cmp-pill.full{ background:var(--go-soft); color:var(--go); }
+  .cmp-pill.partial{ background:var(--accent-soft); color:var(--accent); }
+  .cmp-pill.none{ background:var(--slate-soft); color:var(--slate); }
+  .cmp-pill.ref{ background:var(--panel-2); color:var(--text-lo); }
+  .cmp-footnote{ margin:14px 2px 0; font-size:11.5px; color:var(--text-lo); line-height:1.6; }
+  @media (max-width:720px){ .cmp-table{ min-width:720px; } }
 
   /* synthesis cards */
   .synth-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
@@ -338,9 +372,9 @@
     <div class="masthead-row">
       <p class="sub">This dashboard compares three ways of testing whether AI recommends Flight Centre — recalling from memory, searching the live web, and reading Flight Centre's own page content — across 19 real travel conversations on Gemini. Explore how often Flight Centre gets mentioned under each method, and which of the 9 page-structure variants performs best.</p>
       <div class="meta-block">
-        <span class="pill go"><span class="dot"></span>ProCat data — Run 1 of up to 4</span>
+        <span class="pill go"><span class="dot"></span>ProCat data — 3 of up to 4 runs compared</span>
         <div class="meta-row"><b>Model</b>&nbsp;gemini-3.5-flash-lite</div>
-        <div class="meta-row"><b>As of</b>&nbsp;15 Sep 2026</div>
+        <div class="meta-row"><b>As of</b>&nbsp;16 Sep 2026</div>
       </div>
     </div>
   </header>
@@ -349,7 +383,7 @@
     <div class="icon">i</div>
     <div>
       <p>The <b>V3 / Content-Injected</b> numbers below now come from real <b>ProCat</b> product data (Flight Centre's own export), replacing the earlier synthetic <code style="font-family:'Roboto Mono',monospace;background:var(--panel-2);padding:1px 5px;border-radius:4px;">products.js</code> placeholder run entirely — that dataset is retired and no longer used anywhere on this page.</p>
-      <p>This board currently reflects <b>Run 1 of up to 4 planned</b> — the same 19-conversation script re-run by different team members on separate accounts/environments, since repeat runs of identical scripted turns have already shown real run-to-run variance from Gemini's own response randomness (see Limitations). Once the remaining runs land, results here get pooled into one larger, more stable sample rather than averaged loosely — see the run tracker below the leaderboard.</p>
+      <p>The leaderboard below <b>compares Elle's, Yuva's and Akshay's runs side by side</b> rather than pooling them into one ranking — the same 19-conversation script re-run by different team members on separate accounts/environments, specifically to check whether a variant's result holds up across environments or was just noise from Gemini's own response randomness (see Limitations). Run 1 (Elle) and Run 3 (Akshay) both used a 20,000-character content-extraction depth (16 Sep 2026); Run 2 (Yuva) used the original 8,000-character depth — so Run 1 vs. Run 3 is the first genuine same-depth replicate in this dataset, and it disagrees sharply: <b>no variant now places top-2 in all 3 runs.</b> <b>V4 — Full + Tables</b>, which placed top-2 in both earlier runs, came last in Akshay's same-depth run (1.7%, rank 9 of 9); <b>Site B — Full composite</b> collapsed similarly (53.3% → 5.0%). The closest thing to a consistent signal is <b>P2 — FAQ only</b>, whose Elle and Akshay rates (both 20k-char) land almost identically (46.7% vs. 45.0%) even though its Yuva (8k-char) result was far lower (18.3%) — worth watching, not yet trusted. Pooled totals (n=2133 combined) are shown per variant as supporting context, not the headline ranking. 1 more run still to come — see the comparison table below.</p>
     </div>
   </div>
 
@@ -361,10 +395,10 @@
     </div>
     <div class="board" id="board"></div>
     <div class="signal-card">
-      <div class="signal-num num">99<small>%</small></div>
+      <div class="signal-num num">97<small>%</small></div>
       <div class="signal-body">
         <div class="signal-title">The result that actually holds up</div>
-        <p>282 of 284 injected mentions name Flight&nbsp;Centre as the <b>first</b> brand in the response — versus organic baseline, where every mention scored “Listed” and none led. This prominence shift holds across all 9 site variants regardless of which one wins the mention-rate ranking below (still provisional — see that section).</p>
+        <p>857 of 880 injected mentions (pooled across 3 runs) name Flight&nbsp;Centre as the <b>first</b> brand in the response — versus organic baseline, where every mention scored “Listed” and none led. Unlike the variant ranking below, this one holds up run by run too (96.3% in Elle's, 97.5% in Yuva's, 98.8% in Akshay's) — it's a property of injecting Flight Centre's content at all, not of which specific page structure is used.</p>
       </div>
     </div>
   </section>
@@ -393,25 +427,25 @@
     </div>
   </section>
 
-  <!-- ===================== SITE LEADERBOARD ===================== -->
+  <!-- ===================== SITE COMPARISON ===================== -->
   <section id="sec-leaderboard">
     <div class="section-head">
       <h2>Which page structure wins</h2>
-      <span class="hint">Excl. Book turn · 9 mockup variants × 19 conversations · Run 1 of up to 4 ·
+      <span class="hint">Excl. Book turn · 9 mockup variants × 19 conversations, compared run by run ·
         <a href="mockups/" target="_blank" rel="noopener">browse all 9 pages ↗</a>
       </span>
     </div>
-    <div class="run-tracker" id="runTracker"></div>
     <div class="card">
       <div class="sig-note">
         <span>⚠</span>
-        <span><b>Book turn excluded, direction only.</b> It's saturated at 98.8% across every variant including baseline, so leaving it in would inflate all nine equally. Even with it excluded, <b>V4 — Full + Tables is the first variant to clear conventional significance</b> (p=0.019) — but that's from a single run so far. The other 8 variants still don't clear significance (p=0.34–1.0). Treat this as a strong early signal to prioritise for replication, not a settled ranking yet.</span>
+        <span id="sigNoteText"></span>
       </div>
-      <div class="leaderboard" id="leaderboard">
-        <div class="lb-row head">
-          <div>Rank</div><div>Variant</div><div>Mention rate</div><div style="text-align:right">Rate</div><div style="text-align:right">vs. base</div><div style="text-align:right">p-value</div>
+      <div class="cmp-table-wrap">
+        <div class="cmp-table" id="cmpTable">
+          <div class="cmp-row head" id="cmpHead"></div>
         </div>
       </div>
+      <p class="cmp-footnote">“Top-2” = finished in the top two variants (excl. baseline) on that run's own excl.-Book rate. A pooled test combining all 3 runs is discussed in the note above, not shown per variant — see why there.</p>
     </div>
   </section>
 
@@ -425,11 +459,11 @@
       </div>
       <div class="synth-card">
         <h4>Discoverability is the bigger lever</h4>
-        <p>The 5.1% → 39.9% jump only happens once Flight Centre's content is already in the conversation. Search grounding alone barely moves reach (5.1% → 7.6%, just 1 new conversation out of 19) — the problem is being considered as a candidate at all, not page structure.</p>
+        <p>The 5.1% → 41.3% jump only happens once Flight Centre's content is already in the conversation. Search grounding alone barely moves reach (5.1% → 7.6%, just 1 new conversation out of 19) — the problem is being considered as a candidate at all, not page structure.</p>
       </div>
       <div class="synth-card">
-        <h4>V4 clears significance — on one run</h4>
-        <p>Full + Tables (V4) jumps to 43.3% excl. Book — nearly double baseline's 21.7% — and is the first variant in this project to clear conventional statistical significance (Fisher's exact p = 0.019). That's a real early signal, but it's still Run 1 of up to 4 planned; the next step is replicating it across the remaining team runs before treating it as a recommendation.</p>
+        <h4>No variant has won consistently yet</h4>
+        <p>Full + Tables (V4) and Full composite (Site B) each placed top-2 in 2 of the 3 runs completed so far — but the 3rd run (Akshay, 16 Sep 2026) is the first to share Elle's 20,000-character extraction depth, and both variants collapsed in it: V4 went from #1 (63.3%) to last (1.7%); Site B from #2 (53.3%) to 5.0%. FAQ-only (P2) is the one variant with a close same-depth match (46.7% Elle vs. 45.0% Akshay) but its 8k-char Yuva result was much lower (18.3%). Nothing here clears the bar for a recommendation yet — Run 4 is needed before treating any variant's rank as settled.</p>
       </div>
     </div>
   </section>
@@ -456,7 +490,7 @@
         <tbody id="fileTable"></tbody>
       </table>
     </div>
-    <p class="foot-note">All rubric scores (Relevance, Response Quality, Exposure, Faithful Credit, Causal Impact, Readability &amp; Structure, Trustworthiness) are unverified Gemini self-scores — a first-pass signal, not final numbers, until human spot-checked. <code>FC Mentioned</code> is a deterministic string match and is reliable as-is.</p>
+    <p class="foot-note">All rubric scores (Relevance, Response Quality, Exposure, Faithful Credit, Causal Impact, Readability &amp; Structure, Trustworthiness) are unverified Gemini self-scores — a first-pass signal, not final numbers, until human spot-checked. <code>FC Mentioned</code> is a deterministic string match and is reliable as-is. The Run 1 — Elle file above supersedes an earlier 8,000-character-extraction run of the same script, replaced 16 Sep 2026 when extraction depth was increased to 20,000 characters — see Limitations.</p>
   </footer>
 
 </div>
@@ -483,7 +517,7 @@
   var versions = [
     { name:'V1 — Baseline', sub:'Recall only — no tools, no injected content', rate:5.1, sample:'4 / 79 turns', convos:'3 of 19 conversations', note:'16 of 19 conversations never mention Flight Centre at all, in any turn.' },
     { name:'V2 — Search-Grounded', sub:'Manual, live Google Search grounding — full 19-conversation set', rate:7.6, sample:'6 / 79 turns', convos:'4 of 19 conversations', note:'Reaches 1 new conversation beyond V1 (Q18) — still narrow, and every mention is “Listed,” never “Recommended.”' },
-    { name:'V3 — Content-Injected', sub:'Flight Centre’s own ProCat-based mockup-site content pasted into turn 1 (Run 1 of up to 4 planned)', rate:39.9, sample:'284 / 711 turns', convos:'9 site variants × 19 conversations', note:'99.3% of these mentions name Flight Centre first — the strongest result of the three versions.' }
+    { name:'V3 — Content-Injected', sub:'Flight Centre’s own ProCat-based mockup-site content pasted into turn 1 (3 of up to 4 planned runs compared)', rate:41.3, sample:'880 / 2133 turns', convos:'9 site variants × 19 conversations × 3 runs', note:'97.4% of these mentions name Flight Centre first — the strongest result of the three versions. <b style="color:var(--accent)">Individually: Elle 49.4% (351/711), Yuva 39.8% (283/711), Akshay 34.6% (246/711)</b> — overall reach stays fairly close across all three; it’s specifically which site variant wins that swings hard between runs, including between Elle’s and Akshay’s same-depth runs (see comparison table below).' }
   ];
 
   var stages = ['Dream','Plan','Engage','Book','Pre-trip'];
@@ -500,49 +534,76 @@
 
   // Rates below EXCLUDE the Book turn (98.8% mention rate across every variant incl. baseline —
   // it saturates and inflates all nine equally, hiding the real comparison). Full-inclusive rates
-  // are shown as a secondary figure. Significance = Fisher's exact vs. Site A-Baseline, excl. Book.
-  // This is Run 1 of up to 4 planned team runs on ProCat (real product) data — see the run tracker
-  // and Limitations for why repeat runs are being pooled rather than trusted individually.
+  // are shown as a secondary figure inside each run's cell. "Top-2" flags whether a variant placed
+  // in the top two (excl. baseline) on THAT run's own rate. `pooled` combines all runs so far into
+  // one n=2133 Fisher's-exact test and is shown as smaller, secondary text under the variant name —
+  // see the sig-note and Limitations for why we lead with per-run agreement instead of that pooled
+  // figure: Run 1 (Elle) and Run 3 (Akshay) share a 20k-char extraction depth and still disagree
+  // sharply (V4, Site B), and Run 2 (Yuva) additionally differs in extraction depth (8k), so no pair
+  // of runs here can be assumed interchangeable draws from the same distribution.
   var MOCKUP_BASE = 'mockups/';
-  var siteVariants = [
-    { rank:'1', name:'V4 — Full + Tables', sub:'Schema + FAQ + stats + tables + citations', rate:43.3, full:57.0, delta:21.7, p:'0.019', top:true, url:MOCKUP_BASE+'05_v4_full_tables.html' },
-    { rank:'2', name:'V2 — Schema + FAQ', sub:'Schema markup + FAQ section', rate:23.3, full:40.5, delta:1.7, p:'1.000', url:MOCKUP_BASE+'03_v2_schema_faq.html' },
-    { rank:'3', name:'Site B — Full composite', sub:'Multi-element competitor-style page', rate:21.7, full:40.5, delta:0.0, p:'1.000', url:MOCKUP_BASE+'04_site_b_full.html' },
-    { rank:'—', name:'Site A — Unoptimised', sub:'Reference / control page', rate:21.7, full:40.5, delta:0, p:'—', ref:true, url:MOCKUP_BASE+'01_site_a_baseline.html' },
-    { rank:'5', name:'P4 — Tables only', sub:'Structured comparison tables, no schema', rate:18.3, full:36.7, delta:-3.3, p:'0.820', url:MOCKUP_BASE+'08_p4_tables_only.html' },
-    { rank:'5', name:'P5 — Citations only', sub:'Source-style citation markup', rate:18.3, full:38.0, delta:-3.3, p:'0.820', url:MOCKUP_BASE+'09_p5_citations_only.html' },
-    { rank:'7', name:'P2 — FAQ only', sub:'FAQPage schema, isolated', rate:16.7, full:36.7, delta:-5.0, p:'0.643', url:MOCKUP_BASE+'06_p2_faq_only.html' },
-    { rank:'8', name:'P3 — Statistics only', sub:'Embedded stat callouts', rate:15.0, full:35.4, delta:-6.7, p:'0.480', url:MOCKUP_BASE+'07_p3_stats_only.html' },
-    { rank:'9', name:'V1 — Schema only', sub:'TravelAgency / Product schema markup', rate:13.3, full:34.2, delta:-8.3, p:'0.337', url:MOCKUP_BASE+'02_v1_schema_only.html' }
+  var RUNS_SO_FAR = 3;
+  // Order follows the mockup build sequence (see /mockups/) rather than performance: the
+  // Incremental Comparison Ladder (Site A → V1 → V2 → Site B → V4) followed by the Isolated
+  // Technique Variants (P2 → P3 → P4 → P5) — easier to trace the story than a performance sort,
+  // and the "winner" row is already highlighted regardless of where it falls in this order.
+  var comparisonRows = [
+    { name:'Site A — Unoptimised', sub:'Reference / control page', url:MOCKUP_BASE+'01_site_a_baseline.html', ref:true,
+      elle:{rate:18.3, full:38.0}, yuva:{rate:16.7, full:35.4}, akshay:{rate:15.0, full:35.4}, pooled:{rate:16.7, full:36.3} },
+    { name:'V1 — Schema only', sub:'TravelAgency / Product schema markup', url:MOCKUP_BASE+'02_v1_schema_only.html',
+      elle:{rate:20.0, rank:'6', full:39.2, p:'1.000', top2:false}, yuva:{rate:21.7, rank:'4', full:40.5, p:'0.643', top2:false},
+      akshay:{rate:13.3, rank:'4', full:32.9, p:'1.000', top2:false},
+      pooled:{rate:18.3, full:37.6, p:'0.782', delta:1.6}, top2Count:0 },
+    { name:'V2 — Schema + FAQ', sub:'Schema markup + FAQ section', url:MOCKUP_BASE+'03_v2_schema_faq.html',
+      elle:{rate:40.0, rank:'4', full:54.4, p:'0.015', top2:false}, yuva:{rate:13.3, rank:'9', full:34.2, p:'0.799', top2:false},
+      akshay:{rate:6.7, rank:'7', full:29.1, p:'0.239', top2:false},
+      pooled:{rate:20.0, full:39.2, p:'0.496', delta:3.3}, top2Count:0 },
+    { name:'Site B — Full composite', sub:'Multi-element competitor-style page', url:MOCKUP_BASE+'04_site_b_full.html',
+      elle:{rate:53.3, rank:'2', full:64.6, p:'0.000', top2:true}, yuva:{rate:28.3, rank:'1', full:45.6, p:'0.189', top2:true},
+      akshay:{rate:5.0, rank:'8', full:27.8, p:'0.125', top2:false},
+      pooled:{rate:28.9, full:46.0, p:'0.008', delta:12.2}, top2Count:2 },
+    { name:'V4 — Full + Tables', sub:'Schema + FAQ + stats + tables + citations', url:MOCKUP_BASE+'05_v4_full_tables.html',
+      elle:{rate:63.3, rank:'1', full:72.2, p:'0.000', top2:true}, yuva:{rate:28.3, rank:'1', full:45.6, p:'0.189', top2:true},
+      akshay:{rate:1.7, rank:'9', full:25.3, p:'0.017', top2:false},
+      pooled:{rate:31.1, full:47.7, p:'0.002', delta:14.4}, top2Count:2 },
+    { name:'P2 — FAQ only', sub:'FAQPage schema, isolated', url:MOCKUP_BASE+'06_p2_faq_only.html',
+      elle:{rate:46.7, rank:'3', full:59.5, p:'0.002', top2:false}, yuva:{rate:18.3, rank:'6', full:38.0, p:'1.000', top2:false},
+      akshay:{rate:45.0, rank:'1', full:58.2, p:'0.001', top2:true},
+      pooled:{rate:36.7, full:51.9, p:'0.000', delta:20.0}, top2Count:1 },
+    { name:'P3 — Statistics only', sub:'Embedded stat callouts', url:MOCKUP_BASE+'07_p3_stats_only.html',
+      elle:{rate:20.0, rank:'6', full:39.2, p:'1.000', top2:false}, yuva:{rate:23.3, rank:'3', full:41.8, p:'0.494', top2:false},
+      akshay:{rate:18.3, rank:'2', full:38.0, p:'0.807', top2:true},
+      pooled:{rate:20.6, full:39.7, p:'0.417', delta:3.9}, top2Count:1 },
+    { name:'P4 — Tables only', sub:'Structured comparison tables, no schema', url:MOCKUP_BASE+'08_p4_tables_only.html',
+      elle:{rate:13.3, rank:'9', full:31.6, p:'0.618', top2:false}, yuva:{rate:21.7, rank:'4', full:39.2, p:'0.643', top2:false},
+      akshay:{rate:10.0, rank:'6', full:30.4, p:'0.582', top2:false},
+      pooled:{rate:15.0, full:33.8, p:'0.773', delta:-1.7}, top2Count:0 },
+    { name:'P5 — Citations only', sub:'Source-style citation markup', url:MOCKUP_BASE+'09_p5_citations_only.html',
+      elle:{rate:28.3, rank:'5', full:45.6, p:'0.280', top2:false}, yuva:{rate:18.3, rank:'6', full:38.0, p:'1.000', top2:false},
+      akshay:{rate:13.3, rank:'4', full:34.2, p:'1.000', top2:false},
+      pooled:{rate:20.0, full:39.2, p:'0.496', delta:3.3}, top2Count:0 }
   ];
 
-  // Testing runs — pooling plan for V3 / Content-Injected (ProCat data). Add a run here
-  // (status:'done', who, date, n) as each team member's results come in; the leaderboard
-  // above currently reflects Run 1 only.
-  var testRuns = [
-    { label:'Run 1', who:'Elle', status:'done', date:'15 Sep 2026', n:711 },
-    { label:'Run 2', who:'—', status:'pending' },
-    { label:'Run 3', who:'—', status:'pending' },
-    { label:'Run 4', who:'—', status:'pending' }
-  ];
+  var SIG_NOTE_HTML = '<b>No variant places top-2 in all 3 runs — and the newest run reverses the earlier leader.</b> Run 1 (Elle) and Run 3 (Akshay) both used a 20,000-character extraction depth (16 Sep 2026); Run 2 (Yuva) used the original 8,000-character depth — so Elle vs. Akshay is this dataset’s first genuine same-depth replicate, and it disagrees hard. <b>V4 — Full + Tables</b>, top-2 in both earlier runs, placed <b>last</b> in Akshay’s run (1.7%, rank 9 of 9) after leading Elle’s at 63.3%; <b>Site B — Full composite</b> collapsed the same way (53.3% → 5.0%). Both still show 2-of-3 top-2 placements, but that’s now a minority of runs, not full agreement. The one variant worth watching is <b>P2 — FAQ only</b>: its Elle and Akshay rates land almost identically (46.7% vs. 45.0%, both 20k-char runs) even though its Yuva (8k-char) rate was far lower (18.3%) — consistent at matched depth, but not yet enough evidence to call it a winner. Pooling all 3 runs into one n=2133 sample would show V4, Site B and P2 all significant (p≤0.008), but that pools across both environment differences and a genuine extraction-depth change — treat it as secondary context until Run 4 lands.';
 
   var recos = [
-    'Lead any external summary with the ranking-position finding, not the mention-rate ladder: once Flight Centre’s content is available, 99% of mentions name it first, vs. organic mentions always being “Listed.” Best-evidenced result in the study.',
+    'Lead any external summary with the ranking-position finding, not the mention-rate ladder: once Flight Centre’s content is available, 97% of mentions name it first, vs. organic mentions always being “Listed.” Best-evidenced result in the study.',
     'Report V3 rates with the Book turn excluded, with p-values attached — it’s saturated at 98.8% across every variant including baseline, so it inflates all nine equally and hides the real comparison.',
-    'V4 — Full + Tables is the first variant to clear statistical significance (p=0.019, +21.7pts vs baseline, excl. Book) — but that’s from a single ProCat run. Prioritise replicating this specific variant across the 3 remaining planned team runs before recommending it to Flight Centre; the other 8 variants should stay lower priority until then.',
-    'Don’t yet conclude FAQ-only or citations-only markup hurts. Both trail baseline by only 3.3–5.0 points (p = 0.64–0.82) — not distinguishable from noise at this sample size.',
+    'Do not recommend a page-structure variant to Flight Centre yet. V4 — Full + Tables and Site B — Full composite each looked like the winner after 2 runs (top-2 in both), but Run 3 (Akshay) — the first run to share Elle’s 20,000-char extraction depth — put both last or near-last (V4: 63.3% → 1.7%; Site B: 53.3% → 5.0%). No variant places top-2 in all 3 runs completed so far. P2 — FAQ only is the one variant whose same-depth (20k-char) results agree closely (46.7% Elle vs. 45.0% Akshay) and is worth prioritising for the 4th run, but even that is one data point short of a recommendation.',
+    'Don’t yet conclude tables-only markup hurts or schema-only helps little. Both sit close to baseline across all 3 runs, with p-values nowhere near significance at this sample size (V1: p=0.64–1.00; P4: p=0.58–0.64) — not distinguishable from noise yet.',
     'Treat visibility/presence as the higher-priority problem. Structure improvements have limited impact if Flight Centre isn’t a candidate at all for 16 of 19 scenarios — that needs broader content coverage, not page-level restructuring.',
     'Have a human spot-check a sample of the LLM-judge rubric scores before reporting externally. The Flight Centre-mention finding is a reliable deterministic match; the 0–3 rubric scores carry self-scoring bias risk.',
     'V2 (search-grounded) has now been extended to the full 19-conversation set — closes INP-156. Confirms recall and search grounding both stay narrow (3–4 of 19 conversations); update any earlier materials still citing the 5-conversation subset or the “same 3 conversations, every method” framing.',
-    'This board currently reflects 1 of up to 4 planned ProCat runs (Elle, 15 Sep 2026). Treat rankings — especially V4’s significant result — as provisional until pooled with the remaining team runs; V1 baseline testing already showed meaningful run-to-run variance from Gemini’s own response randomness.'
+    'This board compares 3 of up to 4 planned ProCat runs (Elle and Akshay, both 16 Sep 2026 at 20,000-char extraction; Yuva, 15 Sep 2026 at 8,000-char extraction) side by side rather than pooling them into one ranking — and it’s a good thing it does: Elle and Akshay, the one same-depth pair, disagree sharply on which variant wins. Treat every variant’s rank as unresolved until Run 4 lands, ideally at a consistent extraction depth with the others.'
   ];
 
   var limitations = [
     '<b>Gemini only</b> — GPT-4, Claude and Perplexity were out of scope for automated testing. These findings describe Gemini’s behaviour specifically, not AI search behaviour in general.',
     '<b>LLM self-scoring</b> — the 8 rubric metrics across all three versions are unverified Gemini self-scores, flagged as needing human verification.',
     '<b>V2 collected manually</b> — now covers the full 19-conversation set, but each turn was run and scored by hand rather than through the automated harness used for V1/V3, so repeat-run consistency wasn’t tested the way it was for V1.',
-    '<b>V3 ranking mostly not significant, one exception</b> — Fisher’s exact p = 0.34–1.0 for 8 of 9 variants vs baseline (excl. Book). V4 — Full + Tables is the first to clear conventional significance (p=0.019), but that’s a single run — needs replication before being treated as settled.',
-    '<b>Single-run V3 result</b> — the leaderboard above reflects Run 1 of up to 4 planned team runs (Elle, 15 Sep 2026, real ProCat product data). Rankings may shift once further runs are pooled in — see the run tracker above the leaderboard.',
+    '<b>Two different extraction depths are now mixed in this comparison</b> — Run 1 (Elle) and Run 3 (Akshay) both used a 20,000-character content-extraction limit (16 Sep 2026, visible text + JSON-LD schema); Run 2 (Yuva) still reflects the original 8,000-character limit. Run 1 vs. Run 3 is this dataset’s first genuine same-depth replicate — and the two disagree sharply (see next point) — so any comparison involving Run 2 additionally mixes in a real methodology change, not just environment.',
+    '<b>Pooling can hide run-to-run disagreement</b> — V2 — Schema + FAQ and P2 — FAQ only each swing 25+ points between Elle’s and Yuva’s runs (V2: 13.3% → 40.0%; P2: 18.3% → 46.7%), which a single pooled Fisher’s-exact test doesn’t surface. The comparison table is built around per-run agreement for exactly this reason — the pooled p-values shown per variant are supporting context, not the primary evidence.',
+    '<b>The apparent Run 1/Run 2 leaders did not hold up in Run 3</b> — V4 — Full + Tables and Site B — Full composite each placed top-2 in the first two runs, but both collapsed in Akshay’s run (V4: 63.3% → 1.7%, last of 9; Site B: 53.3% → 5.0%) — notably, the first same-depth replicate of Elle’s run. No variant currently places top-2 in all 3 completed runs; treat every ranking, including these two, as unresolved until Run 4 lands — see the comparison table above.',
     '<b>Run-to-run noise</b> — baseline was run twice this sprint on identical scripted turns; 2 of 4 Flight Centre mentions’ Ranking Position changed between runs (avg. 3.25 → 1.75) purely from the model generating a different organic answer the second time. This is exactly why the upcoming V3 runs are being pooled rather than trusted individually.',
     '<b>Scripted turns</b> — conversation wording is fixed rather than adapted to the AI’s actual prior answer, a Query Set design limitation shared by all three versions.'
   ];
@@ -550,11 +611,11 @@
   var files = [
     ['V1 — Baseline', 'multi_turn_query19_results.csv', '79'],
     ['V2 — Search-Grounded (manual)', 'Manual_Grounded_Test_Template_scored.xlsx', '79'],
-    ['V3 — Content-Injected (ProCat, Run 1 — Elle)', 'elle_multi_turn_query19_injection_results_procat.csv', '711']
+    ['V3 — Content-Injected (ProCat, Run 1 — Elle, 20k-char extraction, 16 Sep 2026)', 'elle_multi_turn_query19_injection_results_procat.csv', '711'],
+    ['V3 — Content-Injected (ProCat, Run 2 — Yuva, 8k-char extraction, 15 Sep 2026)', 'yuva_multi_turn_query19_injection_results_procat.csv', '711'],
+    ['V3 — Content-Injected (ProCat, Run 3 — Akshay, 20k-char extraction, 16 Sep 2026)', 'akshay_multi_turn_query19_injection_results_procat.csv', '711']
   ];
   var pendingFiles = [
-    'V3 — Content-Injected (ProCat, Run 2)',
-    'V3 — Content-Injected (ProCat, Run 3)',
     'V3 — Content-Injected (ProCat, Run 4)'
   ];
 
@@ -600,37 +661,101 @@
     compWrap.appendChild(row);
   });
 
-  // ---------- RENDER: leaderboard ----------
-  var lb = document.getElementById('leaderboard');
-  var lbMax = Math.max.apply(null, siteVariants.map(function(s){return s.rate;}));
-  siteVariants.forEach(function(s){
-    var row = document.createElement('div');
-    row.className = 'lb-row' + (s.top?' top':'') + (s.ref?' baseline-ref':'');
-    var deltaClass = s.ref ? 'zero' : (s.delta > 0 ? 'pos' : (s.delta < 0 ? 'neg' : 'zero'));
-    var deltaText = s.ref ? 'ref.' : (s.delta > 0 ? '+'+s.delta : (s.delta === 0 ? '0.0' : s.delta));
-    var sigClose = !s.ref && parseFloat(s.p) < 0.3;
-    row.innerHTML =
-      '<div class="lb-rank">'+s.rank+'</div>'+
-      '<div class="lb-name">'+s.name+' <a class="lb-view" href="'+s.url+'" target="_blank" rel="noopener" title="Open this mockup page">↗</a>'+
-        '<small>'+s.sub+' · '+s.full+'% incl. Book</small></div>'+
-      '<div class="lb-track"><div class="lb-fill" data-w="'+(s.rate/lbMax*100)+'"></div></div>'+
-      '<div class="lb-rate num">'+s.rate+'%</div>'+
-      '<div class="lb-delta num '+deltaClass+'">'+deltaText+'</div>'+
-      '<div class="lb-sig num'+(sigClose?' close':'')+'">'+(s.p==='—'?'—':'p='+s.p)+'</div>';
-    lb.appendChild(row);
+  // ---------- RENDER: comparison table ----------
+  document.getElementById('sigNoteText').innerHTML = SIG_NOTE_HTML;
+
+  var cmpHead = document.getElementById('cmpHead');
+  cmpHead.innerHTML =
+    '<div class="sortable" data-sort-key="_reset" title="Click to reset to build order">Variant</div>'+
+    '<div class="sortable" data-sort-key="elle" title="Click to sort by Elle\'s rate">Run 1 · Elle<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9.5px;">20k-char extraction</span><span class="sort-arrow" data-arrow-for="elle"></span></div>'+
+    '<div class="sortable" data-sort-key="yuva" title="Click to sort by Yuva\'s rate">Run 2 · Yuva<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9.5px;">8k-char extraction</span><span class="sort-arrow" data-arrow-for="yuva"></span></div>'+
+    '<div class="sortable" data-sort-key="akshay" title="Click to sort by Akshay\'s rate">Run 3 · Akshay<br><span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:9.5px;">20k-char extraction</span><span class="sort-arrow" data-arrow-for="akshay"></span></div>'+
+    '<div>Run 4</div>'+
+    '<div class="cmp-consistency sortable" data-sort-key="top2Count" title="Click to sort by cross-run consistency">Consistency<span class="sort-arrow" data-arrow-for="top2Count"></span></div>';
+
+  var cmpTable = document.getElementById('cmpTable');
+  var refRow = comparisonRows.filter(function(r){ return r.ref; })[0];
+  var defaultVariantRows = comparisonRows.filter(function(r){ return !r.ref; });
+  var sortState = { key:null, dir:'desc' };
+
+  function runCell(row, r){
+    if (!r) return '<div class="cmp-cell pending">— pending —</div>';
+    var cls = 'cmp-cell' + (r.top2 ? ' top2' : '');
+    var subText = row.ref ? 'ref · ' + r.full + '% incl. Book' : '#' + r.rank + ' · p=' + r.p;
+    return '<div class="'+cls+'"><div class="cmp-rate">'+r.rate+'%</div><div class="cmp-sub">'+subText+'</div></div>';
+  }
+
+  function buildRowEl(row){
+    var el = document.createElement('div');
+    el.className = 'cmp-row' + (row.ref ? ' ref-row' : (row.top2Count === RUNS_SO_FAR ? ' winner' : ''));
+    var consistencyHtml;
+    if (row.ref){
+      consistencyHtml = '<span class="cmp-pill ref">Reference</span>';
+    } else {
+      var pillClass = row.top2Count === RUNS_SO_FAR ? 'full' : (row.top2Count > 0 ? 'partial' : 'none');
+      consistencyHtml = '<span class="cmp-pill '+pillClass+'">Top-2 in '+row.top2Count+'/'+RUNS_SO_FAR+' runs</span>';
+    }
+    el.innerHTML =
+      '<div class="cmp-name">'+
+        '<span class="cmp-name-title">'+row.name+' <a class="cmp-view" href="'+row.url+'" target="_blank" rel="noopener" title="Open this mockup page">↗</a></span>'+
+        '<small>'+row.sub+'</small>'+
+      '</div>'+
+      runCell(row, row.elle) +
+      runCell(row, row.yuva) +
+      runCell(row, row.akshay) +
+      '<div class="cmp-cell pending">— pending —</div>'+
+      '<div class="cmp-consistency">'+consistencyHtml+'</div>';
+    return el;
+  }
+
+  // Reference row always stays pinned first — it's the baseline anchor, not a competitor,
+  // so it's excluded from sorting. The 8 variant rows re-render in whatever order is active.
+  function renderRows(variantRows){
+    Array.prototype.slice.call(cmpTable.querySelectorAll('.cmp-row:not(.head)')).forEach(function(n){ n.remove(); });
+    cmpTable.appendChild(buildRowEl(refRow));
+    variantRows.forEach(function(row){ cmpTable.appendChild(buildRowEl(row)); });
+  }
+
+  function sortValue(row, key){
+    return key === 'top2Count' ? row.top2Count : row[key].rate;
+  }
+
+  function updateSortIndicators(){
+    Array.prototype.slice.call(cmpHead.querySelectorAll('.sortable')).forEach(function(h){
+      h.classList.toggle('active', h.dataset.sortKey === sortState.key);
+    });
+    Array.prototype.slice.call(cmpHead.querySelectorAll('.sort-arrow')).forEach(function(a){
+      var forKey = a.getAttribute('data-arrow-for');
+      var isActive = sortState.key === forKey;
+      a.classList.toggle('active', isActive);
+      // Neutral ⇅ on every sortable column at rest (so sorting is discoverable before the
+      // first click), swapped for a bold directional arrow on whichever column is active.
+      a.textContent = isActive ? (sortState.dir === 'desc' ? ' ▾' : ' ▴') : ' ⇅';
+    });
+  }
+
+  function applySort(key){
+    if (key === '_reset'){
+      sortState = { key:null, dir:'desc' };
+      renderRows(defaultVariantRows);
+      updateSortIndicators();
+      return;
+    }
+    sortState = { key:key, dir: (sortState.key === key && sortState.dir === 'desc') ? 'asc' : 'desc' };
+    var sorted = defaultVariantRows.slice().sort(function(a,b){
+      var diff = sortValue(a,key) - sortValue(b,key);
+      return sortState.dir === 'desc' ? -diff : diff;
+    });
+    renderRows(sorted);
+    updateSortIndicators();
+  }
+
+  Array.prototype.slice.call(cmpHead.querySelectorAll('.sortable')).forEach(function(h){
+    h.addEventListener('click', function(){ applySort(h.dataset.sortKey); });
   });
 
-  // ---------- RENDER: run tracker ----------
-  var runTracker = document.getElementById('runTracker');
-  testRuns.forEach(function(r){
-    var card = document.createElement('div');
-    card.className = 'run-card ' + r.status;
-    card.innerHTML =
-      '<div class="run-label">'+r.label+'</div>'+
-      '<div class="run-who">'+r.who+'</div>'+
-      '<div class="run-status">'+(r.status==='done' ? 'Complete · '+r.date+' · n='+r.n : 'Not started')+'</div>';
-    runTracker.appendChild(card);
-  });
+  renderRows(defaultVariantRows);
+  updateSortIndicators();
 
   // ---------- RENDER: recommendations ----------
   var recoList = document.getElementById('recoList');
