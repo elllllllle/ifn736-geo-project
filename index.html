@@ -83,7 +83,7 @@
 
   /* ============ HEADER ============ */
   header.masthead{
-    padding-bottom:22px; margin-bottom:22px; border-bottom:1px solid var(--border);
+    padding-bottom:56px; margin-bottom:22px;
   }
   .masthead h1{
     font-family:"Roboto", ui-sans-serif, sans-serif;
@@ -91,16 +91,16 @@
     letter-spacing:.01em; margin:6px 0 8px; text-wrap:balance;
   }
   .masthead-row{
-    display:flex; flex-wrap:wrap; gap:20px 40px; align-items:flex-start;
+    display:flex; flex-direction:column; gap:14px;
     margin-top:16px;
   }
   .masthead .sub{
-    flex:1 1 320px; min-width:0; box-sizing:border-box;
-    color:var(--text-lo); font-size:14.5px; margin-top:0; line-height:1.5; text-align:left;
+    width:100%; box-sizing:border-box;
+    color:var(--text-lo); font-size:14.5px; margin:0; line-height:1.5; text-align:left;
   }
   .meta-block{
-    flex:1 1 320px; min-width:0; box-sizing:border-box;
-    display:flex; flex-direction:column; gap:8px; align-items:flex-start; text-align:left;
+    width:100%; box-sizing:border-box;
+    display:flex; flex-direction:row; flex-wrap:wrap; gap:8px 28px; align-items:center; text-align:left;
   }
   .meta-row{ display:flex; gap:8px; justify-content:flex-start; font-family:"Roboto Mono",monospace; font-size:12px; color:var(--text-lo); }
   .meta-row b{ color:var(--text-hi); font-weight:600; }
@@ -134,6 +134,7 @@
     font-family:"Roboto", sans-serif; font-weight:700; font-size:24px; letter-spacing:.01em;
   }
   .section-head .hint{ color:var(--text-lo); font-size:13px; }
+  .section-group-start{ margin-top:56px; padding-top:36px; }
 
   /* ============ BOARD (headline rows) ============ */
   .board{
@@ -275,6 +276,7 @@
   .cmp-pill.partial{ background:var(--accent-soft); color:var(--accent); }
   .cmp-pill.none{ background:var(--slate-soft); color:var(--slate); }
   .cmp-pill.ref{ background:var(--panel-2); color:var(--text-lo); }
+  .cmp-pill.drop{ background:var(--gap-soft); color:var(--gap); }
   .cmp-footnote{ margin:14px 2px 0; font-size:11.5px; color:var(--text-lo); line-height:1.6; }
   @media (max-width:720px){ .cmp-table{ min-width:720px; } }
 
@@ -301,13 +303,14 @@
   .limit-panel li b{ color:var(--text-hi); }
 
   /* footer / source files */
-  footer{ margin-top:56px; padding-top:22px; border-top:1px solid var(--border); }
+  footer{ margin-top:56px; padding-top:22px; }
   .filetable{ width:100%; border-collapse:collapse; font-size:13px; }
   .filetable th{ text-align:left; font-family:"Roboto Mono",monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-lo); font-weight:600; padding:8px 10px; border-bottom:1px solid var(--border); }
   .filetable td{ padding:9px 10px; border-bottom:1px solid var(--border); color:var(--text-hi); }
   .filetable td.file{ font-family:"Roboto Mono",monospace; font-size:12px; }
   .filetable td.num{ text-align:right; font-family:"Roboto Mono",monospace; color:var(--text-lo); }
   .filetable tr.pending td{ color:var(--text-lo); font-style:italic; }
+  .filetable tr.emphasis td{ color:var(--accent); font-weight:700; } #poolTable td{ border-bottom:none; }
   .foot-note{ margin-top:18px; font-size:12px; color:var(--text-lo); line-height:1.6; }
   .foot-note code{ font-family:"Roboto Mono",monospace; background:var(--panel-2); padding:1px 5px; border-radius:4px; }
 
@@ -370,11 +373,10 @@
     <div class="eyebrow" style="margin-bottom:24px;">IFN736 Industry Project (Phase 2) · Group 22</div>
     <h1>Is&nbsp;Flight&nbsp;Centre&nbsp;on&nbsp;the&nbsp;board?</h1>
     <div class="masthead-row">
-      <p class="sub">This dashboard compares three ways of testing whether AI recommends Flight Centre — recalling from memory, searching the live web, and reading Flight Centre's own page content — across 19 real travel conversations on Gemini. Explore how often Flight Centre gets mentioned under each method, and which of the 9 page-structure variants performs best.</p>
+      <p class="sub">Tests whether Gemini recommends Flight Centre three ways — from memory, live web search, and reading Flight Centre's own pages — across 19 real travel conversations, and compares how 9 page-structure variants perform.</p>
       <div class="meta-block">
-        <span class="pill go"><span class="dot"></span>ProCat data — 4 of 4 planned runs complete</span>
         <div class="meta-row"><b>Model</b>&nbsp;gemini-3.5-flash-lite</div>
-        <div class="meta-row"><b>As of</b>&nbsp;17 Sep 2026</div>
+        <div class="meta-row"><b>Last updated</b>&nbsp;30 Sep 2026</div>
       </div>
     </div>
   </header>
@@ -382,8 +384,7 @@
   <div class="banner">
     <div class="icon">i</div>
     <div>
-      <p>The <b>V3 / Content-Injected</b> numbers below now come from real <b>ProCat</b> product data (Flight Centre's own export), replacing the earlier synthetic <code style="font-family:'Roboto Mono',monospace;background:var(--panel-2);padding:1px 5px;border-radius:4px;">products.js</code> placeholder run entirely — that dataset is retired and no longer used anywhere on this page.</p>
-      <p>The leaderboard below <b>compares Elle's, Yuva's, Akshay's and Matthew's runs side by side</b> rather than pooling them into one ranking — the same 19-conversation script re-run by different team members on separate accounts/environments, specifically to check whether a variant's result holds up across environments or was just noise from Gemini's own response randomness (see Limitations). Elle, Akshay and Matthew all used a 20,000-character content-extraction depth; Yuva used the original 8,000-character depth. With Matthew's run in, <b>V4 — Full + Tables</b> and <b>Site B — Full composite</b> now place top-2 in 3 of the 4 completed runs — <b>Akshay's run is the one outlier for both.</b> Because Matthew's run also used 20k-char extraction and agrees with Elle and Yuva rather than with Akshay, extraction depth does not explain the disagreement — it looks like a run-specific anomaly in Akshay's data rather than a genuine reversal (worth a manual review, not yet confirmed). Pooled totals (n=2844 combined) are shown per variant as supporting context, not the headline ranking. All 4 planned runs are now complete.</p>
+      <p>The leaderboard below <b>compares Elle's, Yuva's, Akshay's and Matthew's runs side by side</b> rather than pooling them into one ranking — the same 19-conversation script re-run by different team members on separate accounts/environments, to check whether a result holds up across environments or is just noise from Gemini's own response randomness (see Limitations). Elle, Akshay and Matthew used a 20,000-character content-extraction depth; Yuva used the original 8,000-character depth. <b>V4 — Full + Tables</b> and <b>Site B — Full composite</b> place top-2 in 3 of the 4 runs — <b>Akshay's run is the outlier for both.</b> Since Matthew's run (also 20k-char) agrees with Elle and Yuva rather than Akshay, extraction depth doesn't explain the disagreement — it looks like a run-specific anomaly rather than a genuine reversal. Pooled totals (n=2844 combined) are shown per variant as supporting context, not the headline ranking.</p>
     </div>
   </div>
 
@@ -395,10 +396,10 @@
     </div>
     <div class="board" id="board"></div>
     <div class="signal-card">
-      <div class="signal-num num">98<small>%</small></div>
+      <div class="signal-num num">97.6<small>%</small></div>
       <div class="signal-body">
         <div class="signal-title">The result that actually holds up</div>
-        <p>1132 of 1160 injected mentions (pooled across all 4 runs) name Flight&nbsp;Centre as the <b>first</b> brand in the response — versus organic baseline, where every mention scored “Listed” and none led. Unlike the variant ranking below, this one holds up run by run too (96.3% in Elle's, 97.5% in Yuva's, 98.8% in Akshay's, 98.2% in Matthew's) — it's a property of injecting Flight Centre's content at all, not of which specific page structure is used.</p>
+        <p>1132 of 1160 injected mentions (pooled across all 4 runs) name Flight&nbsp;Centre as the <b>first</b> brand in the response — versus organic baseline, where every mention scored “Listed” and none led. Unlike the variant ranking below, this one holds up run by run too (96.3% in Elle’s, 97.5% in Yuva’s, 98.8% in Akshay’s, 98.2% in Matthew’s) — it’s a property of injecting Flight Centre’s content at all, not of which specific page structure is used.</p>
       </div>
     </div>
   </section>
@@ -427,11 +428,33 @@
     </div>
   </section>
 
+  <!-- ===================== POOLED SIGNIFICANCE ===================== -->
+  <section id="sec-pooled" class="section-group-start">
+    <div class="section-head">
+      <h2>Pooled significance</h2>
+      <span class="hint">Pooled across all 4 runs · Fisher's exact test on combined counts (n=240 per variant, excl. Book turn)</span>
+    </div>
+    <div class="card">
+      <p style="margin:0 0 16px; font-size:13px; line-height:1.6; color:var(--text-lo);">Each individual run only has n=60 per variant — too small for any one run's p-value to be trusted on its own (see <a href="#sec-leaderboard">run-by-run consistency below</a>). Pooling all 4 runs together gives n=240 per variant and real statistical power, which is why this is the more defensible basis for a recommendation, not the run-by-run table.</p>
+      <div class="sig-note">
+        <span>⚠</span>
+        <span id="poolNoteText"></span>
+      </div>
+      <div style="overflow-x:auto; margin-top:16px;">
+        <table class="filetable" id="poolTable">
+          <thead><tr><th style="text-align:center">Rank</th><th>Variant</th><th style="text-align:right">Pooled rate (n=240)</th><th style="text-align:right">Pooled p</th><th style="text-align:right">Beat baseline</th></tr></thead>
+          <tbody id="poolTableBody"></tbody>
+        </table>
+      </div>
+      <p class="cmp-footnote" id="poolFootnote"></p>
+    </div>
+  </section>
+
   <!-- ===================== SITE COMPARISON ===================== -->
   <section id="sec-leaderboard">
     <div class="section-head">
-      <h2>Which page structure wins</h2>
-      <span class="hint">Excl. Book turn · 9 mockup variants × 19 conversations, compared run by run ·
+      <h2>Run-by-run consistency</h2>
+      <span class="hint">Excl. Book turn · same 9 variants, compared run by run — the detail behind the pooled verdict above ·
         <a href="mockups/" target="_blank" rel="noopener">browse all 9 pages ↗</a>
       </span>
     </div>
@@ -445,7 +468,7 @@
           <div class="cmp-row head" id="cmpHead"></div>
         </div>
       </div>
-      <p class="cmp-footnote">“Top-2” = finished in the top two variants (excl. baseline) on that run's own excl.-Book rate. A pooled test combining all 4 runs is discussed in the note above, not shown per variant — see why there.</p>
+      <p class="cmp-footnote">“Top-2” = finished in the top two variants (excl. baseline) on that run's own excl.-Book rate. A pooled Fisher's exact test combining all 4 runs is shown in “Pooled significance” above — this table instead checks whether that pooled result actually holds up run by run, since no single run alone is reliable at n=60/variant.</p>
     </div>
   </section>
 
@@ -500,7 +523,8 @@
   <ul>
     <li><a href="#sec-headline" data-target="sec-headline">Headline results</a></li>
     <li><a href="#sec-journey" data-target="sec-journey">Journey stage &amp; competitors</a></li>
-    <li><a href="#sec-leaderboard" data-target="sec-leaderboard">Which page structure wins</a></li>
+    <li><a href="#sec-pooled" data-target="sec-pooled">Pooled significance</a></li>
+    <li><a href="#sec-leaderboard" data-target="sec-leaderboard">Run-by-run consistency</a></li>
     <li><a href="#sec-synthesis" data-target="sec-synthesis">Key takeaways</a></li>
     <li><a href="#sec-recommendations" data-target="sec-recommendations">Recommendations</a></li>
     <li><a href="#sec-limitations" data-target="sec-limitations">Limitations & caveats</a></li>
@@ -515,9 +539,9 @@
 
   // ---------- DATA ----------
   var versions = [
-    { name:'V1 — Baseline', sub:'Recall only — no tools, no injected content', rate:5.1, sample:'4 / 79 turns', convos:'3 of 19 conversations', note:'16 of 19 conversations never mention Flight Centre at all, in any turn.' },
-    { name:'V2 — Search-Grounded', sub:'Manual, live Google Search grounding — full 19-conversation set', rate:7.6, sample:'6 / 79 turns', convos:'4 of 19 conversations', note:'Reaches 1 new conversation beyond V1 (Q18) — still narrow, and every mention is “Listed,” never “Recommended.”' },
-    { name:'V3 — Content-Injected', sub:'Flight Centre’s own ProCat-based mockup-site content pasted into turn 1 (all 4 planned runs compared)', rate:40.8, sample:'1160 / 2844 turns', convos:'9 site variants × 19 conversations × 4 runs', note:'97.6% of these mentions name Flight Centre first — the strongest result of the three versions. <b style="color:var(--accent)">Individually: Elle 49.4% (351/711), Yuva 39.8% (283/711), Akshay 34.6% (246/711), Matthew 39.4% (280/711)</b> — overall reach stays fairly close across all four; it’s specifically which site variant wins that swings hard between runs, with Akshay’s run standing out as the one consistent outlier (see comparison table below).' }
+    { name:'V1 — Baseline', sub:'No tools, no injected content — run via the Gemini API (Python), independent of browser session.', rate:5.1, sample:'4 / 79 turns', convos:'3 of 19 conversations', note:'16 of 19 conversations never mention Flight Centre at all.' },
+    { name:'V2 — Search-Grounded', sub:'Live Google Search grounding, full 19-conversation set — run manually, turn by turn.', rate:7.6, sample:'6 / 79 turns', convos:'4 of 19 conversations', note:'1 new conversation beyond V1 (Q18) — still narrow, and every mention is “Listed,” never “Recommended.”' },
+    { name:'V3 — Content-Injected', sub:'Flight Centre’s ProCat mockup content pasted into turn 1, all 4 runs — run via the Gemini API (Python), independent of browser session.', rate:40.8, sample:'1160 / 2844 turns', convos:'9 site variants × 19 conversations × 4 runs', note:'97.6% name Flight Centre first — the strongest of the three versions. <b style="color:var(--accent)">By run: Elle 49.4%, Yuva 39.8%, Akshay 34.6%, Matthew 39.4%</b> — reach is consistent across runs; it’s which site variant wins that swings hard, with Akshay’s run the one consistent outlier (see comparison table below).' }
   ];
 
   var stages = ['Dream','Plan','Engage','Book','Pre-trip'];
@@ -554,38 +578,38 @@
     { name:'V1 — Schema only', sub:'TravelAgency / Product schema markup', url:MOCKUP_BASE+'02_v1_schema_only.html',
       elle:{rate:20.0, rank:'6', full:39.2, p:'1.000', top2:false}, yuva:{rate:21.7, rank:'4', full:40.5, p:'0.643', top2:false},
       akshay:{rate:13.3, rank:'4', full:32.9, p:'1.000', top2:false}, matthew:{rate:20.0, rank:'4', full:39.2, p:'1.000', top2:false},
-      pooled:{rate:18.8, full:38.0, p:'0.721', delta:1.7}, top2Count:0 },
+      pooled:{rate:18.8, full:38.0, p:'0.7212', delta:1.7, beatBaseline:3, sigCount:0, verdict:'weak'}, top2Count:0 },
     { name:'V2 — Schema + FAQ', sub:'Schema markup + FAQ section', url:MOCKUP_BASE+'03_v2_schema_faq.html',
       elle:{rate:40.0, rank:'4', full:54.4, p:'0.015', top2:false}, yuva:{rate:13.3, rank:'9', full:34.2, p:'0.799', top2:false},
       akshay:{rate:6.7, rank:'7', full:29.1, p:'0.239', top2:false}, matthew:{rate:18.3, rank:'5', full:38.0, p:'1.000', top2:false},
-      pooled:{rate:19.6, full:38.9, p:'0.555', delta:2.5}, top2Count:0 },
+      pooled:{rate:19.6, full:38.9, p:'0.5555', delta:2.5, beatBaseline:1, sigCount:1, verdict:'weak'}, top2Count:0 },
     { name:'Site B — Full composite', sub:'Multi-element competitor-style page', url:MOCKUP_BASE+'04_site_b_full.html',
       elle:{rate:53.3, rank:'2', full:64.6, p:'0.000', top2:true}, yuva:{rate:28.3, rank:'1', full:45.6, p:'0.189', top2:true},
       akshay:{rate:5.0, rank:'8', full:27.8, p:'0.125', top2:false}, matthew:{rate:23.3, rank:'2', full:41.8, p:'0.654', top2:true},
-      pooled:{rate:27.5, full:44.9, p:'0.008', delta:10.4}, top2Count:3 },
+      pooled:{rate:27.5, full:44.9, p:'0.0083', delta:10.4, beatBaseline:3, sigCount:1, verdict:'strong'}, top2Count:3 },
     { name:'V4 — Full + Tables', sub:'Schema + FAQ + stats + tables + citations', url:MOCKUP_BASE+'05_v4_full_tables.html',
       elle:{rate:63.3, rank:'1', full:72.2, p:'0.000', top2:true}, yuva:{rate:28.3, rank:'1', full:45.6, p:'0.189', top2:true},
       akshay:{rate:1.7, rank:'9', full:25.3, p:'0.017', top2:false}, matthew:{rate:30.0, rank:'1', full:46.8, p:'0.200', top2:true},
-      pooled:{rate:30.8, full:47.5, p:'0.001', delta:13.7}, top2Count:3 },
+      pooled:{rate:30.8, full:47.5, p:'0.0006', delta:13.7, beatBaseline:3, sigCount:2, sigNote:'1 positive, 1 negative', verdict:'strong'}, top2Count:3 },
     { name:'P2 — FAQ only', sub:'FAQPage schema, isolated', url:MOCKUP_BASE+'06_p2_faq_only.html',
       elle:{rate:46.7, rank:'3', full:59.5, p:'0.002', top2:false}, yuva:{rate:18.3, rank:'6', full:38.0, p:'1.000', top2:false},
       akshay:{rate:45.0, rank:'1', full:58.2, p:'0.001', top2:true}, matthew:{rate:15.0, rank:'8', full:35.4, p:'0.807', top2:false},
-      pooled:{rate:31.2, full:47.8, p:'0.000', delta:14.1}, top2Count:1 },
+      pooled:{rate:31.2, full:47.8, p:'0.0004', delta:14.1, beatBaseline:3, sigCount:2, sigNote:'both positive', verdict:'lowEffort'}, top2Count:1 },
     { name:'P3 — Statistics only', sub:'Embedded stat callouts', url:MOCKUP_BASE+'07_p3_stats_only.html',
       elle:{rate:20.0, rank:'6', full:39.2, p:'1.000', top2:false}, yuva:{rate:23.3, rank:'3', full:41.8, p:'0.494', top2:false},
       akshay:{rate:18.3, rank:'2', full:38.0, p:'0.807', top2:true}, matthew:{rate:15.0, rank:'8', full:35.4, p:'0.807', top2:false},
-      pooled:{rate:19.2, full:38.6, p:'0.636', delta:2.1}, top2Count:1 },
+      pooled:{rate:19.2, full:38.6, p:'0.6357', delta:2.1, beatBaseline:3, sigCount:0, verdict:'weak'}, top2Count:1 },
     { name:'P4 — Tables only', sub:'Structured comparison tables, no schema', url:MOCKUP_BASE+'08_p4_tables_only.html',
       elle:{rate:13.3, rank:'9', full:31.6, p:'0.618', top2:false}, yuva:{rate:21.7, rank:'4', full:39.2, p:'0.643', top2:false},
       akshay:{rate:10.0, rank:'6', full:30.4, p:'0.582', top2:false}, matthew:{rate:18.3, rank:'5', full:38.0, p:'1.000', top2:false},
-      pooled:{rate:15.8, full:34.8, p:'0.806', delta:-1.3}, top2Count:0 },
+      pooled:{rate:15.8, full:34.8, p:'0.8057', delta:-1.3, beatBaseline:1, sigCount:0, verdict:'drop'}, top2Count:0 },
     { name:'P5 — Citations only', sub:'Source-style citation markup', url:MOCKUP_BASE+'09_p5_citations_only.html',
       elle:{rate:28.3, rank:'5', full:45.6, p:'0.280', top2:false}, yuva:{rate:18.3, rank:'6', full:38.0, p:'1.000', top2:false},
       akshay:{rate:13.3, rank:'4', full:34.2, p:'1.000', top2:false}, matthew:{rate:23.3, rank:'2', full:41.8, p:'0.654', top2:true},
-      pooled:{rate:20.8, full:39.9, p:'0.352', delta:3.7}, top2Count:1 }
+      pooled:{rate:20.8, full:39.9, p:'0.3516', delta:3.7, beatBaseline:3, sigCount:0, verdict:'weak'}, top2Count:1 }
   ];
 
-  var SIG_NOTE_HTML = '<b>V4 — Full + Tables and Site B — Full composite now place top-2 in 3 of the 4 completed runs — Akshay’s run is the one outlier for both.</b> Elle, Akshay and Matthew all used a 20,000-character extraction depth; Yuva used the original 8,000-character depth. Because Matthew’s run (also 20k-char) agrees with Elle and Yuva rather than with Akshay, extraction depth does not explain the disagreement — it looks like a run-specific anomaly in Akshay’s data rather than a genuine effect of page structure (worth a manual review of that run, not yet confirmed). <b>P2 — FAQ only</b>, which looked like a promising same-depth match between Elle and Akshay (46.7% vs. 45.0%), no longer holds up now that Matthew’s run is in — Matthew’s rate for P2 was just 15.0% (rank 8 of 9), so that apparent consistency doesn’t survive a third data point. Pooling all 4 runs into one n=2844 sample shows V4, Site B and P2 all significant (p≤0.008), but pooling mixes together genuine environment differences — treat it as secondary context. All 4 planned runs are now complete.';
+  var SIG_NOTE_HTML = '<b>V4 — Full + Tables and Site B — Full composite now place top-2 in 3 of the 4 completed runs — Akshay’s run is the one outlier for both.</b> Elle, Akshay and Matthew all used a 20,000-character extraction depth; Yuva used the original 8,000-character depth. Because Matthew’s run (also 20k-char) agrees with Elle and Yuva rather than with Akshay, extraction depth does not explain the disagreement — it looks like a run-specific anomaly in Akshay’s data rather than a genuine effect of page structure (worth a manual review of that run, not yet confirmed). <b>P2 — FAQ only</b>, which looked like a promising same-depth match between Elle and Akshay (46.7% vs. 45.0%), no longer holds up now that Matthew’s run is in — Matthew’s rate for P2 was just 15.0% (rank 8 of 9), so that apparent consistency doesn’t survive a third data point. See “Pooled significance” above for the full pooled significance breakdown (Fisher’s exact test on n=240/variant) — it’s the more rigorous version of this same pooling logic, and it’s where P2 — FAQ only earns its “best low-effort pick” billing. All 4 planned runs are now complete.';
 
   var recos = [
     'Lead any external summary with the ranking-position finding, not the mention-rate ladder: once Flight Centre’s content is available, 97% of mentions name it first, vs. organic mentions always being “Listed.” Best-evidenced result in the study.',
@@ -659,6 +683,43 @@
       '<div class="hbar-track"><div class="hbar-fill'+(c.fc?' fc':'')+'" data-w="'+(c.val/maxComp*100)+'"></div></div>'+
       '<div class="hbar-val">'+c.val+'</div>';
     compWrap.appendChild(row);
+  });
+
+  // ---------- RENDER: pooled significance table ----------
+  var POOL_NOTE_HTML = '<b>P2 — FAQ only is the best-evidenced low-effort technique.</b> Pooled across all 4 runs it beats baseline by +14.1pp (31.2% vs 17.1%) at p=0.0004 — a stronger pooled result than Site B (p=0.0083) and close to V4’s (p=0.0006) — and it’s cheaper to implement than either (FAQ copywriting only, no schema pipeline or fabricated review data). <b>Caveat:</b> that significance is driven by only 2 of the 4 runs (Elle, Akshay — both individually p&lt;0.01); Yuva and Matthew showed no effect at all. Treat this as the strongest-evidenced single technique across a combined 240-turn sample, not as proven.';
+  var POOL_FOOTNOTE_HTML = '<b>V4 — Full + Tables</b> and <b>Site B — Full composite</b> remain the strongest overall ceiling if Flight Centre pursues the full bundle (highest pooled rates and significance) — at higher implementation effort than P2. <b>P4 — Tables only</b> pools below baseline (15.8% vs 17.1%) and beat baseline in only 1 of 4 runs — not recommended for further consideration. “Beat baseline” = pooled rate exceeded baseline in that many of the 4 individual runs. See “Run-by-run consistency” below for the per-run detail behind every number here.';
+  document.getElementById('poolNoteText').innerHTML = POOL_NOTE_HTML;
+  document.getElementById('poolFootnote').innerHTML = POOL_FOOTNOTE_HTML;
+
+  // Ranking is by pooled rate, baseline excluded (it's the reference, not a ranked
+  // contender). The low-effort pick (P2) gets emphasis text instead of a row background,
+  // so it reads as the standout without implying the other rows are lesser data.
+  var poolTableBody = document.getElementById('poolTableBody');
+  var poolRefRow = comparisonRows.filter(function(r){ return r.ref; })[0];
+  var poolRefTr = document.createElement('tr');
+  poolRefTr.innerHTML =
+    '<td style="text-align:center">ref</td>'+
+    '<td>'+poolRefRow.name+'</td>'+
+    '<td class="num">'+poolRefRow.pooled.rate+'%</td>'+
+    '<td class="num">—</td>'+
+    '<td class="num">ref</td>';
+  poolTableBody.appendChild(poolRefTr);
+
+  var poolSorted = comparisonRows.filter(function(r){ return !r.ref; }).slice().sort(function(a,b){
+    return b.pooled.rate - a.pooled.rate;
+  });
+  poolSorted.forEach(function(row, i){
+    var p = row.pooled;
+    var tr = document.createElement('tr');
+    if (p.verdict === 'lowEffort') tr.className = 'emphasis';
+    var nameCell = row.name + (p.verdict === 'lowEffort' ? ' ← best-evidenced, low-effort' : '');
+    tr.innerHTML =
+      '<td style="text-align:center">'+(i+1)+'</td>'+
+      '<td>'+nameCell+'</td>'+
+      '<td class="num">'+p.rate+'%</td>'+
+      '<td class="num">'+p.p+'</td>'+
+      '<td class="num">'+p.beatBaseline+'/4</td>';
+    poolTableBody.appendChild(tr);
   });
 
   // ---------- RENDER: comparison table ----------
