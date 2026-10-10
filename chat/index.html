@@ -164,7 +164,7 @@
     margin-top:8px; padding:10px 12px; border:1px solid var(--border); border-radius:10px;
     background:var(--panel-2); max-width:420px;
   }
-  .metrics-row{ display:flex; flex-wrap:wrap; gap:8px; }
+  .metrics-row{ display:flex; flex-wrap:wrap; gap:28px; }
   .metric{ display:flex; flex-direction:column; gap:2px; min-width:74px; }
   .metric-label{
     font-family:"Roboto Mono", ui-monospace, monospace; font-size:9.5px; font-weight:600;
@@ -176,9 +176,14 @@
   .metrics-loading{ font-family:"Roboto Mono", ui-monospace, monospace; font-size:11px; color:var(--text-lo); font-style:italic; }
 
   /* 7-metric rubric — one row per metric, label left / score right, instead of wrapping chips */
+  .rubric-scale{
+    margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:10px; font-weight:600;
+    letter-spacing:.02em; color:var(--text-lo);
+  }
   .rubric-table{
     display:grid; grid-template-columns:1fr auto; row-gap:7px; column-gap:14px;
-    margin-top:8px; padding-top:8px; border-top:1px dashed var(--border);
+    margin-top:6px;
   }
   .rubric-table .r-label{ font-family:"Roboto Mono", ui-monospace, monospace; font-size:11px; color:var(--text-lo); align-self:center; }
   .rubric-table .r-value{
@@ -318,8 +323,8 @@
     <p class="glossary-intro">
       Inclusion Rate and Ranking Position are checked directly against the response text — no
       judgement call involved. Relevance through Trustworthiness are scored 0–3 by Gemini judging
-      its own answer: unverified self-scores, shown so you can see what the team's evaluation
-      actually measures, not as a tested result.
+      its own answer (0 = poor/absent, 3 = excellent): unverified self-scores, shown so you can see
+      what the team's evaluation actually measures, not as a tested result.
     </p>
     <dl class="glossary-grid">
       <dt>Inclusion Rate</dt>
@@ -710,6 +715,7 @@
         metricChip("Inclusion Rate", fc ? "Yes" : "No", fc ? "go" : "gap") +
         metricChip("Ranking Position", rankText, fc ? "go" : "") +
       `</div>` +
+      `<div class="rubric-scale">Scored 0–3 per criterion — 0 = poor/absent, 3 = excellent</div>` +
       `<div class="rubric-table" id="rubric-${idx}">` +
         `<span class="r-loading">Scoring against the 7-point rubric…</span>` +
       `</div>` +
