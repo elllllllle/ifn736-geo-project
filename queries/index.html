@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Query Set — Flight Centre GEO Project</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&family=Roboto+Mono:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    --bg:#F4F6F9; --panel:#FFFFFF; --panel-2:#ECF0F5; --border:#D8DEE7;
+    --text-hi:#161A22; --text-lo:#57647A;
+    --accent:#A6690A; --accent-soft:#F3E3C6;
+    --go:#1F8F6C; --go-soft:#DCF1E9;
+    --gap:#C23B2E; --gap-soft:#F7E1DE;
+    --slate:#6B7A94; --slate-soft:#E4E9F0;
+    --user-bubble:#1B2029; --user-bubble-text:#F4F6F9;
+    --shadow: 0 1px 2px rgba(22,26,34,.04), 0 8px 24px -12px rgba(22,26,34,.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#12151C;
+      --panel:#1B2029;
+      --panel-2:#232936;
+      --border:#2E3644;
+      --text-hi:#ECF0F6;
+      --text-lo:#96A2B8;
+      --accent:#F0A93E;
+      --accent-soft:#3A2E13;
+      --go:#4FD8A6;
+      --go-soft:#123528;
+      --gap:#E8685B;
+      --gap-soft:#3A1F1B;
+      --slate:#8B98B0;
+      --slate-soft:#242B38;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 12px 28px -14px rgba(0,0,0,.6);
+    }
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--bg); color:var(--text-hi);
+    font-family:"Roboto", ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:1180px; margin:0 auto; padding:28px 20px 60px; }
+
+  .eyebrow{
+    font-family:"Roboto Mono", ui-monospace, monospace;
+    font-size:12px; font-weight:600; letter-spacing:.14em; text-transform:uppercase;
+    color:var(--text-lo);
+  }
+
+  h1{
+  font-weight:900; font-size:clamp(24px,3.4vw,46px); line-height:1.02;
+  letter-spacing:.01em; margin:6px 0 8px; text-wrap:balance;
+  }
+  .lede{ color:var(--text-lo); font-size:14.5px; line-height:1.55; margin:0 0 22px; }
+  .lede a{ color:var(--accent); text-decoration:none; }
+  .lede a:hover{ text-decoration:underline; }
+
+  /* ============ PROVENANCE BANNER ============ */
+  .banner{
+    display:flex; gap:14px; align-items:flex-start;
+    background:var(--panel); border:1px solid var(--border); border-left:4px solid var(--accent);
+    border-radius:10px; padding:16px 18px; margin-bottom:32px; box-shadow:var(--shadow);
+  }
+  .banner .icon{ font-family:"Roboto Mono",monospace; font-weight:700; color:var(--accent); font-size:13px; padding-top:1px;}
+  .banner p{ margin:0; font-size:14px; line-height:1.55; color:var(--text-hi); }
+  .banner p + p{ margin-top:6px; color:var(--text-lo); font-size:13.5px; }
+  .banner b{ color:var(--accent); }
+
+  /* ============ JOURNEY LEGEND ============ */
+  .legend-row{
+    display:flex; flex-wrap:wrap; gap:8px 10px; align-items:center;
+    margin-bottom:36px; font-size:12px; color:var(--text-lo);
+  }
+  .legend-stage{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-weight:600;
+    font-size:11px; letter-spacing:.03em; text-transform:uppercase;
+    background:var(--panel-2); border:1px solid var(--border); color:var(--text-hi);
+    padding:4px 10px; border-radius:6px;
+  }
+  .legend-arrow{ color:var(--text-lo); }
+  .legend-note{ margin-left:6px; }
+
+  .group{ margin-bottom:44px; }
+  .group-head{ margin-bottom:16px; }
+  .group-title{
+    font-family:"Roboto", sans-serif;
+    font-size:24px;
+    font-weight:700;
+    color:var(--text-hi);
+    margin:0 0 8px;
+  }
+  .group-desc{
+    font-size:12.5px;
+    color:var(--text-lo);
+    line-height:1.6;
+    margin:0;
+  }
+  .grid{
+    display:grid;
+    gap:10px;
+  }
+
+  /* ============ CONVERSATION CARD ============ */
+  details.qcard{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+  }
+  details.qcard[open]{ border-color:var(--accent); }
+  details.qcard summary{
+    display:flex; align-items:flex-start; gap:14px;
+    padding:16px; cursor:pointer; list-style:none;
+  }
+  details.qcard summary::-webkit-details-marker{ display:none; }
+  .qbadge{
+    flex:0 0 auto; min-width:38px; height:30px; padding:0 8px;
+    border-radius:8px; background:var(--slate-soft); color:var(--text-lo);
+    display:flex; align-items:center; justify-content:center;
+    font-family:"Roboto Mono",monospace; font-size:11px; font-weight:700; margin-top:2px;
+  }
+  details.qcard.out-of-scope .qbadge{ background:var(--gap-soft); color:var(--gap); }
+  .qinfo{ flex:1 1 auto; min-width:0; }
+  .qname{
+    font-family:"Roboto", sans-serif; font-size:16px; font-weight:600; color:var(--text-hi);
+    display:flex; align-items:center; gap:8px; flex-wrap:wrap;
+  }
+  .qexpand{ color:var(--text-lo); font-size:13px; transition:transform .15s ease; margin-left:auto; padding-top:2px; }
+  details.qcard[open] .qexpand{ transform:rotate(180deg); }
+  .qmeta{ font-size:12.5px; color:var(--text-lo); line-height:1.55; margin-top:4px; }
+  .qpersona{
+    font-family:"Roboto Mono",monospace; font-size:10.5px; font-weight:600; letter-spacing:.03em;
+    background:var(--panel-2); border:1px solid var(--border); color:var(--text-hi);
+    padding:2px 8px; border-radius:5px; white-space:nowrap;
+  }
+  .qpreview{ font-size:13px; color:var(--text-lo); line-height:1.55; margin-top:8px; font-style:italic; }
+  .qnotice{
+    display:inline-flex; align-items:center; gap:5px;
+    font-size:11px; font-weight:600; letter-spacing:.02em;
+    padding:2px 8px; border-radius:5px; white-space:nowrap;
+  }
+  .qnotice.scope{ background:var(--gap-soft); color:var(--gap); }
+  .qnotice.pending{ background:var(--accent-soft); color:var(--accent); }
+
+  .qbody{ padding:0 16px 18px 68px; }
+  .qbody-note{
+    background:var(--panel-2); border:1px solid var(--border); border-radius:8px;
+    padding:10px 12px; font-size:12.5px; color:var(--text-lo); line-height:1.55; margin-bottom:14px;
+  }
+  .qbody-note b{ color:var(--text-hi); }
+  .turn{ padding:10px 0; border-top:1px solid var(--border); }
+  .turn:first-child{ border-top:none; padding-top:0; }
+  .turn-head{ display:flex; align-items:baseline; gap:8px; margin-bottom:4px; flex-wrap:wrap; }
+  .turn-stage{
+    font-family:"Roboto Mono",monospace; font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;
+    color:var(--accent);
+  }
+  .turn-intent{
+    font-family:"Roboto Mono",monospace; font-size:10px; font-weight:600; letter-spacing:.02em;
+    color:var(--text-lo); background:var(--panel-2); border:1px solid var(--border);
+    padding:1px 7px; border-radius:4px;
+  }
+  .turn-text{ font-size:14px; color:var(--text-hi); line-height:1.55; margin:0 0 3px; }
+  .turn-reason{ font-size:12px; color:var(--text-lo); line-height:1.5; margin:0; }
+
+  footer{
+    font-size:11.5px;
+    color:var(--text-lo);
+    line-height:1.6;
+  }
+  footer a{ color:var(--accent); text-decoration:none; }
+  footer a:hover{ text-decoration:underline; }
+
+  .topbar{ background:var(--panel); border-bottom:1px solid var(--border); }
+  .topbar-inner{ max-width:1180px; margin:0 auto; padding:14px 20px; display:flex; justify-content:center; gap:8px; }
+  .site-nav-link{
+    font-family:"Roboto Mono", ui-monospace, monospace; font-size:12px; font-weight:600;
+    letter-spacing:.04em; text-decoration:none; color:var(--text-lo);
+    padding:8px 16px; border-radius:6px; border:1px solid transparent;
+  }
+  .site-nav-link.active{ color:var(--text-hi); background:var(--panel-2); border-color:var(--border); }
+  .site-nav-link:hover:not(.active){ color:var(--text-hi); }
+
+  @media (max-width:640px){
+    .qbody{ padding-left:16px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-inner">
+    <a href="../" class="site-nav-link">Findings</a>
+    <a href="../chat/" class="site-nav-link">Chat Demo</a>
+    <a href="../mockups/" class="site-nav-link">Mockup Sites</a>
+    <a href="./" class="site-nav-link active">Query Set</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <div class="eyebrow" style="margin-bottom:24px;">IFN736 Industry Project (Phase 2) · Group 22</div>
+  <h1>The 19 test conversations</h1>
+  <p class="lede">These are the multi-turn conversation scripts we run against each page variant to test whether AI assistants mention Flight Centre. Each one is grounded in Flight Centre's own Customer Persona Book and follows FC's real Dream → Plan → Engage → Book (→ Pre-trip) journey stages, replacing the original 15 single-query Phase 1 tests. See the <a href="../">Findings dashboard</a> for results.</p>
+
+  <div class="banner">
+    <div class="icon">i</div>
+    <div>
+      <p><b>Turns 1 and 4 are used exactly as written; turns 2, 3 and 5 are a starting point, adapted to what the AI actually said.</b> Turn 1 (Dream) never mentions "package," "deal," or Flight Centre by name. Turn 4 (Book) is fixed and identical across all 19 — "Who do I actually book this through?" — deliberately neutral so the closing question never hints at DIY or an agency.</p>
+      <p>Only 3 of 19 extend to a 5th (Pre-trip) turn — Q16, Q17 and Q19 — because Flight Centre's own persona data names a specific Pre-trip behaviour for those exact concerns. In-trip and Return stages are out of scope, since both happen after the booking decision is already made.</p>
+    </div>
+  </div>
+
+  <div class="legend-row">
+    <span>Journey stages:</span>
+    <span class="legend-stage">Dream</span><span class="legend-arrow">→</span>
+    <span class="legend-stage">Plan</span><span class="legend-arrow">→</span>
+    <span class="legend-stage">Engage</span><span class="legend-arrow">→</span>
+    <span class="legend-stage">Book</span><span class="legend-arrow">→</span>
+    <span class="legend-stage">Pre-trip*</span>
+    <span class="legend-note">*3 of 19 only</span>
+  </div>
+
+  <div class="group" id="evolved-group">
+    <div class="group-head">
+      <h2 class="group-title">Evolved from Phase 1 themes</h2>
+      <p class="group-desc">Each of these 15 evolved from one of the original Phase 1 query categories — same destination/product theme, rewritten from a single search-box query into a natural multi-turn conversation.</p>
+    </div>
+    <div class="grid" id="evolvedGrid"></div>
+  </div>
+
+  <div class="group" id="new-group">
+    <div class="group-head">
+      <h2 class="group-title">New themes</h2>
+      <p class="group-desc">4 additional conversations covering concerns neither the original 15 nor the earlier 23 persona conversations tested as an opening question.</p>
+    </div>
+    <div class="grid" id="newGrid"></div>
+  </div>
+
+  <footer>
+    Source: Phase 2 Query Set (Draft v4, 25 Aug 2026). See the <a href="../">Findings dashboard</a> for how these conversations performed across all 9 page variants, or try the <a href="../chat/">live chat demo</a> to run one yourself.
+  </footer>
+</div>
+
+<script>
+  var INTENT = { I:'Inspirational', C:'Commercial', T:'Transactional' };
+
+  var evolved = [
+    { id:'Q01', theme:'Budget-conscious couple — first overseas trip together', persona:'Escape Artists',
+      evolvedFrom:'Phase 1 Q01 — Best travel packages to Bali from Australia',
+      turns:[
+        { stage:'Dream', text:'My partner and I have never really travelled overseas together — we’re thinking somewhere like Bali might be a good place to start.', intent:'I', reason:'Open exploration of a first destination, no specifics yet.' },
+        { stage:'Plan', text:'We’ve probably got about $3,000 total for a week — is that realistic?', intent:'C', reason:'Budget ceiling and timeframe narrow toward comparing concrete options.' },
+        { stage:'Engage', text:'Would it be simpler to get flights and the hotel as one deal, or is it usually cheaper to compare a few options and sort them separately?', intent:'C', reason:'Actively comparing provider/booking approaches.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q02', theme:'Family traveller — domestic, two young kids', persona:'Modern Family',
+      evolvedFrom:'Phase 1 Q02 — Family-friendly holiday packages from Brisbane',
+      turns:[
+        { stage:'Dream', text:'We’re planning a family holiday for the school holidays — two kids under 10, flying out of Brisbane.', intent:'I', reason:'Broad family trip planning, no destination fixed.' },
+        { stage:'Plan', text:'Ideally nothing more than about a 3-hour flight — what would you actually suggest?', intent:'C', reason:'Narrows via a concrete constraint to specific suggestions.' },
+        { stage:'Engage', text:'Is it worth looking at a package with the flights and accommodation together for a family, or better to book bits separately?', intent:'C', reason:'Comparing package vs separate booking options.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q03', theme:'Budget backpacker — international, cost-driven', persona:'Maverick',
+      evolvedFrom:'Phase 1 Q03 — Cheap flights to London from Sydney',
+      turns:[
+        { stage:'Dream', text:'I want to get to London as cheaply as possible from Sydney — I don’t mind a long layover if it saves money.', intent:'T', reason:'Fixed route + explicit price priority signals near-booking intent.' },
+        { stage:'Plan', text:'Is there a time of year that’s noticeably cheaper to fly?', intent:'C', reason:'Comparing timing/price options before deciding.' },
+        { stage:'Engage', text:'Should I be booking directly with an airline, or is it worth using a travel site or agent to compare?', intent:'C', reason:'Comparing booking channels.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q04', theme:'Value-conscious couple — anniversary trip', persona:'Escape Artists',
+      evolvedFrom:'Phase 1 Q04 — Luxury cruise deals in the Mediterranean',
+      turns:[
+        { stage:'Dream', text:'My partner and I want to do something special for our anniversary next year — thinking a Mediterranean cruise.', intent:'I', reason:'Occasion-led exploration, no specifics yet.' },
+        { stage:'Plan', text:'What time of year is actually best for that, weather and crowd-wise?', intent:'I', reason:'Still gathering general planning information, not comparing specific offers.' },
+        { stage:'Engage', text:'Is it worth comparing a few different cruise lines, or is it normally better value booked direct?', intent:'C', reason:'Explicitly comparing providers for value.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q05', theme:'Budget backpacker — solo, domestic', persona:'Maverick',
+      evolvedFrom:'Phase 1 Q05 — Budget holiday packages under $2000 from Melbourne',
+      turns:[
+        { stage:'Dream', text:'I want to spend a week or two exploring somewhere in Australia by myself, keeping costs low, flying out of Melbourne.', intent:'I', reason:'Broad exploration, no destination fixed.' },
+        { stage:'Plan', text:'What’s realistic if I’ve only got around $1,500 total?', intent:'C', reason:'Hard budget ceiling narrows toward comparing concrete options.' },
+        { stage:'Engage', text:'Is it cheaper to book transport and accommodation as I go, or sort it all in advance?', intent:'C', reason:'Comparing booking approaches.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q06', theme:'Value-conscious couple — honeymoon', persona:'Escape Artists',
+      evolvedFrom:'Phase 1 Q06 — Honeymoon travel packages Australia',
+      turns:[
+        { stage:'Dream', text:'We’re getting married next year and want to plan our honeymoon somewhere in Australia — something a bit special.', intent:'I', reason:'No destination or budget yet — exploring for an occasion.' },
+        { stage:'Plan', text:'We’d like it to feel private and relaxed rather than busy — does that change what you’d suggest?', intent:'I', reason:'Refining preferences, still no concrete option on the table.' },
+        { stage:'Engage', text:'Are honeymoon packages usually good value, or is it cheaper to compare and piece it together ourselves?', intent:'C', reason:'Comparing package vs DIY value.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q07', theme:'Corporate traveller', persona:'Not covered', outOfScope:true,
+      evolvedFrom:'Phase 1 Q07 — Business class flights to Singapore from Australia',
+      note:'Confirmed OUT OF SCOPE by Sarah (20 Aug 2026) — a different target segment to what Flight Centre is currently working on. Kept in the set as a labelled out-of-scope control; the conversation itself is unchanged from Draft v3.',
+      turns:[
+        { stage:'Dream', text:'I’ve got a work trip to Singapore next month for a few days of meetings — need to sort flights and a hotel.', intent:'T', reason:'Fixed route and a defined near-term need.' },
+        { stage:'Plan', text:'My return date might change depending on how the meetings go — does that matter for booking?', intent:'T', reason:'Booking condition/flexibility question, close to action.' },
+        { stage:'Engage', text:'Should I be booking this myself, or is it easier to have someone else handle it given it’s for work?', intent:'C', reason:'Comparing booking channels/options.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q08', theme:'Family traveller — international resort', persona:'Modern Family',
+      evolvedFrom:'Phase 1 Q08 — All-inclusive resort packages in Fiji',
+      turns:[
+        { stage:'Dream', text:'Looking at an all-inclusive resort in Fiji for a family trip — want everything sorted so we’re not managing bookings the whole time.', intent:'C', reason:'Destination fixed, comparing specific resort package types.' },
+        { stage:'Plan', text:'We’ve got two kids — is there anything in particular worth checking for a family resort like that?', intent:'C', reason:'Narrowing to specific family-relevant product features.' },
+        { stage:'Engage', text:'Is all-inclusive normally cheaper as a package, or does it work out the same either way?', intent:'C', reason:'Comparing package value.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q09', theme:'Solo traveller (new voice) — ease/safety-focused', persona:'Maverick',
+      evolvedFrom:'Phase 1 Q09 — Solo travel packages from Australia to Japan',
+      turns:[
+        { stage:'Dream', text:'I’m thinking about going to Japan by myself for a couple of weeks — first time travelling solo.', intent:'I', reason:'Broad idea-gathering, no specifics yet.' },
+        { stage:'Plan', text:'Is that actually a comfortable place to travel alone, safety and language-wise?', intent:'I', reason:'General reassurance-seeking, not comparing products yet.' },
+        { stage:'Engage', text:'Would a guided tour be worth it for a first solo trip, or is it easy enough to do independently?', intent:'C', reason:'Comparing tour vs independent options.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q10', theme:'Last-minute traveller', persona:'Maverick',
+      evolvedFrom:'Phase 1 Q10 — Last-minute holiday deals from Sydney',
+      turns:[
+        { stage:'Dream', text:'Something’s come up and I need to get out of Sydney in the next few days — haven’t booked anything yet.', intent:'T', reason:'Urgency signals near-term booking intent.' },
+        { stage:'Plan', text:'I don’t really mind where, just needs to be somewhere I can actually get into quickly.', intent:'T', reason:'Availability-driven, ready to act.' },
+        { stage:'Engage', text:'Is it too late at this point to get a decent price, or are last-minute deals usually worse?', intent:'C', reason:'Comparing price/value expectations.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q11', theme:'Senior friend group — five retired friends travelling together', persona:'Flock of Fun-Seekers',
+      evolvedFrom:'Phase 1 Q11 — Travel packages for seniors from Australia',
+      turns:[
+        { stage:'Dream', text:'There’s five of us, all retired, thinking about doing a trip together next year — something relaxed, not too much rushing around.', intent:'I', reason:'Group size (3-8, matching Flock of Fun-Seekers) plus a comfort need established, no destination yet.' },
+        { stage:'Plan', text:'With five of us coordinating, we’d really rather not be the ones sorting all the logistics — is that something that’s actually manageable to hand off?', intent:'C', reason:'Facilitation need narrows toward concrete organised-trip options — matches Flock of Fun-Seekers’ “Advice Taker requiring facilitation” trait.' },
+        { stage:'Engage', text:'Would an escorted group tour work better for us, or is it easier to just have someone put together an itinerary and we go independently?', intent:'C', reason:'Comparing escorted-group vs organised-independent formats.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q12', theme:'Adventure traveller', persona:'Maverick',
+      evolvedFrom:'Phase 1 Q12 — Adventure travel packages New Zealand',
+      turns:[
+        { stage:'Dream', text:'Keen to do something active in New Zealand — hiking, maybe some adrenaline stuff, not just sightseeing.', intent:'I', reason:'Broad exploration of a travel style within a destination.' },
+        { stage:'Plan', text:'What’s actually worth building a trip around there?', intent:'I', reason:'Still general idea-gathering.' },
+        { stage:'Engage', text:'Do adventure activities like that usually need to be booked ahead, or can I sort them once I’m there?', intent:'C', reason:'Comparing booking approaches/timing.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q13', theme:'Budget-conscious couple — first trip to Europe', persona:'Escape Artists',
+      evolvedFrom:'Phase 1 Q13 — Cheap holiday packages Europe from Australia',
+      turns:[
+        { stage:'Dream', text:'My partner and I are planning our first trip to Europe together — want to see a few countries without blowing the budget.', intent:'C', reason:'Region-wide, budget-aware comparison across many possible packages.' },
+        { stage:'Plan', text:'Is it realistic to cover a few countries in about two weeks without it being exhausting?', intent:'I', reason:'Feasibility/planning question, not yet comparing specific offers.' },
+        { stage:'Engage', text:'Is a multi-country trip like that easier as a package, or do most people just plan it themselves?', intent:'C', reason:'Comparing package vs DIY.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q14', theme:'Family traveller — last-minute domestic weekend trip', persona:'Modern Family',
+      evolvedFrom:'Phase 1 Q14 — Beach holiday packages Queensland',
+      turns:[
+        { stage:'Dream', text:'We’ve decided kind of last minute that we want to get away with the kids this long weekend — haven’t looked at anything yet.', intent:'I', reason:'Time-pressured, broad exploration — no destination or specifics yet, distinct from Q02’s planned school-holiday scenario.' },
+        { stage:'Plan', text:'We can’t be too far from home since it’s only a few days — what’s actually realistic on short notice?', intent:'C', reason:'Time and distance constraints narrow toward concrete short-break options.' },
+        { stage:'Engage', text:'With this little lead time, is it better to book flights and a place separately, or is a package actually quicker to sort?', intent:'C', reason:'Comparing booking speed/convenience under time pressure — the short-notice equivalent of package vs DIY.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q15', theme:'Group organiser (new scene) — 8-person friend group', persona:'Flock of Fun-Seekers',
+      evolvedFrom:'Phase 1 Q15 — Group travel packages from Australia',
+      turns:[
+        { stage:'Dream', text:'A group of us, about 8 people, want to do a trip together for a friend’s 40th — never organised anything this size before.', intent:'I', reason:'No destination or size specifics beyond headcount, early-stage idea-gathering.' },
+        { stage:'Plan', text:'How do you even handle it when everyone wants slightly different things?', intent:'I', reason:'Process question, not yet comparing options.' },
+        { stage:'Engage', text:'Is there a way to get a group discount, or does that only really work through an agent?', intent:'C', reason:'Comparing discount/booking-channel options.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    }
+  ];
+
+  var fresh = [
+    { id:'Q16', theme:'Visa/insurance bundler', persona:'Maverick',
+      evolvedFrom:'NEW — Visa + insurance bundling (extends the Visa/insurance bundler persona from User Story 201)',
+      turns:[
+        { stage:'Dream', text:'Planning a trip to Canada and I’ve never dealt with a visa before — not sure what I actually need.', intent:'I', reason:'General information-seeking, no product yet.' },
+        { stage:'Plan', text:'Should I be sorting travel insurance at the same time, or is that a separate thing?', intent:'C', reason:'Comparing bundled vs separate service options.' },
+        { stage:'Engage', text:'Is there somewhere that handles the visa and the insurance together, or do I need to do those separately?', intent:'C', reason:'Actively comparing providers/services.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true },
+        { stage:'Pre-trip', text:'Once it’s booked, is there anything else I should be sorting before I actually leave?', intent:'T', reason:'Actionable, near-departure checklist request.', fixed:true }
+      ]
+    },
+    { id:'Q17', theme:'New voice — cancellation / flexibility', persona:'Flock of Fun-Seekers',
+      evolvedFrom:'NEW — Cancellation / flexibility (not covered as an opening query in either the original 15 or the 23 User Story 201 conversations)',
+      turns:[
+        { stage:'Dream', text:'I want to book a trip for later in the year but I’m not 100% sure my dates will hold — work stuff might change.', intent:'C', reason:'Evaluating a real, near-term booking with a specific constraint in mind.' },
+        { stage:'Plan', text:'How much does that usually cost you if you need to change things later?', intent:'C', reason:'Comparing cost/terms across options.' },
+        { stage:'Engage', text:'Is it worth paying more upfront for something flexible, or is that not really a thing?', intent:'C', reason:'Weighing a specific product/pricing trade-off.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true },
+        { stage:'Pre-trip', text:'If something does come up closer to the date, what’s actually involved in changing it at that point?', intent:'T', reason:'Actionable, process-specific question close to the decision.', fixed:true }
+      ]
+    },
+    { id:'Q18', theme:'New voice — trust / reviews', persona:'Modern Family',
+      evolvedFrom:'NEW — Trust / reviews (connects to the single negative mention in the Findings Report — fees and rebooking support)',
+      turns:[
+        { stage:'Dream', text:'I’ve never used a travel agent before and I’m honestly a bit unsure if it’s worth it versus just booking everything myself.', intent:'C', reason:'Directly comparing agent vs DIY, evaluating a specific decision.' },
+        { stage:'Plan', text:'What would actually make you trust one over just doing it yourself?', intent:'C', reason:'Comparing criteria/providers.' },
+        { stage:'Engage', text:'Are there ones that are known for being reliable if something goes wrong, like a flight getting cancelled?', intent:'C', reason:'Comparing specific providers on reliability.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true }
+      ]
+    },
+    { id:'Q19', theme:'New voice — solo female traveller safety', persona:'Maverick',
+      evolvedFrom:'NEW — Safety / risk (not covered as an opening query in either the original 15 or the 23 User Story 201 conversations)',
+      turns:[
+        { stage:'Dream', text:'I’m a woman travelling alone for the first time and safety is honestly my biggest worry — not sure where’s actually manageable for that.', intent:'I', reason:'Broad, no destination or product yet, seeking general reassurance.' },
+        { stage:'Plan', text:'What would you actually recommend for someone in my situation?', intent:'I', reason:'Still general recommendation-seeking.' },
+        { stage:'Engage', text:'Does it make sense to have some support in place in case something goes wrong while I’m away, or is that overkill?', intent:'C', reason:'Evaluating a specific service/product decision.' },
+        { stage:'Book', text:'Who do I actually book this through?', intent:'T', reason:'Choosing a booking channel — the closing question is deliberately the same wording every time.', fixed:true },
+        { stage:'Pre-trip', text:'Is there anything worth setting up before I leave, in case something goes wrong while I’m away?', intent:'T', reason:'Actionable, near-departure checklist request.', fixed:true }
+      ]
+    }
+  ];
+
+  function renderGroup(items, gridId){
+    var grid = document.getElementById(gridId);
+    items.forEach(function(q){
+      var d = document.createElement('details');
+      d.className = 'qcard' + (q.outOfScope ? ' out-of-scope' : '');
+
+      var notice = '';
+      if (q.outOfScope) notice = '<span class="qnotice scope">Out of scope</span>';
+      else if (q.reworked) notice = '<span class="qnotice pending">Pending sign-off</span>';
+
+      var summary = document.createElement('summary');
+      summary.innerHTML =
+        '<div class="qbadge">'+q.id+'</div>'+
+        '<div class="qinfo">'+
+          '<div class="qname">'+q.theme+' <span class="qpersona">'+q.persona+'</span> '+notice+'</div>'+
+          '<div class="qmeta">Evolved from '+q.evolvedFrom+'</div>'+
+          '<div class="qpreview">“'+q.turns[0].text+'”</div>'+
+        '</div>'+
+        '<div class="qexpand">▾</div>';
+      d.appendChild(summary);
+
+      var body = document.createElement('div');
+      body.className = 'qbody';
+      var bodyHtml = '';
+      if (q.note) bodyHtml += '<div class="qbody-note">'+q.note+'</div>';
+      q.turns.forEach(function(t){
+        bodyHtml +=
+          '<div class="turn">'+
+            '<div class="turn-head"><span class="turn-stage">'+t.stage+(t.fixed?' (fixed)':'')+'</span><span class="turn-intent">'+INTENT[t.intent]+'</span></div>'+
+            '<p class="turn-text">'+t.text+'</p>'+
+            '<p class="turn-reason">'+t.reason+'</p>'+
+          '</div>';
+      });
+      body.innerHTML = bodyHtml;
+      d.appendChild(body);
+
+      grid.appendChild(d);
+    });
+  }
+
+  renderGroup(evolved, 'evolvedGrid');
+  renderGroup(fresh, 'newGrid');
+</script>
+</body>
+</html>
